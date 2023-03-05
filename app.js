@@ -1,12 +1,16 @@
-async function draw() {
+async function draw(data) {
   // Data
-  const dataset = await d3.csv("data/stephcurry/curry-2009.csv");
+  const dataset = await data;
 
   const parseDate = d3.timeParse("%Y-%m-%d");
-  //returns a function that can parse a string
-  //it'll return a date object based on this string
+
   const xAccessor = (d) => parseDate(d.Date);
   const yAccessor = (d) => parseInt(d.TPM);
+
+  const dataWithRunningTotal = dataset.map((d, i) => ({
+    ...d,
+    TPM_running_total: d3.sum(dataset.slice(0, i + 1), yAccessor),
+  }));
 
   // Dimensions
   let dimensions = {
@@ -35,28 +39,42 @@ async function draw() {
   // Scales
   const yScale = d3
     .scaleLinear()
-    .domain(d3.extent(dataset, yAccessor))
+    .domain([0, 3500]) //swap with the current record. make dynamic
     .range([dimensions.ctrHeight, 0])
     .nice();
 
   const xScale = d3
     .scaleTime()
-    .domain(d3.extent(data), xAccessor)
+    .domain(d3.extent(dataset, xAccessor))
     .range([0, dimensions.ctrWidth]);
 
   // Generators
   const lineGenerator = d3
     .line()
     .x((d) => xScale(xAccessor(d)))
-    .y((d) => yScale(yAccessor(d)));
+    .y((d) => yScale(d.TPM_running_total));
 
   ctr
     .append("path")
-    .datum(dataset)
+    .datum(dataWithRunningTotal)
     .attr("d", lineGenerator)
     .attr("fill", "none")
     .attr("stroke", "#30475e")
     .attr("stroke-width", 2);
+
+  // Axis
+  const yAxis = d3.axisLeft(yScale); //will draw a vertical axis with the tickers to the left
+
+  ctr.append("g").call(yAxis);
+
+  const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y"));
+
+  ctr
+    .append("g")
+    .style("transform", `translateY(${dimensions.ctrHeight}px)`)
+    .call(xAxis);
 }
 
-draw();
+const curry = d3.csv("data/stephcurry/curry-career.csv");
+
+draw(curry);
