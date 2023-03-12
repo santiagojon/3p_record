@@ -104,14 +104,6 @@ async function draw(datasets) {
       })
       .on("mouseleave", function (event, d) {
         d3.select(".tooltip").remove();
-
-        // tooltip
-        //   .html(
-        //     `<div>Date: ${currentData.Date}</div><div>3PM: ${currentData.TPM_running_total}</div>`
-        //   )
-        //   .style("left", `${event.pageX + 10}px`)
-        //   .style("top", `${event.pageY + 10}px`)
-        //   .style("opacity", 1);
       });
 
     // Axes
@@ -129,9 +121,20 @@ async function draw(datasets) {
 }
 
 //Players
+// const curryArr = d3.csv("data/stephcurry/curry-career.csv");
+// const curry = { playerName: "Steph Curry", data: curryArr };
+
 const curry = d3.csv("data/stephcurry/curry-career.csv");
+const allen = d3.csv("data/rayallen/allen-career.csv");
 
 //Consolidate data and call function
-const dataset = [curry];
+const dataset = [curry, allen];
 
 draw(dataset);
+
+//////////////////////////////////
+
+//Current To Do
+// 1. Add player name to the top of each line
+// 2. Fix tooltip. It's showing the same date and nothing for 3PM
+// 3. Add 1-2 other players to test
