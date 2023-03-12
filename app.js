@@ -1,19 +1,24 @@
-async function draw(data) {
+async function draw(datasets) {
   // Data
-  const dataset = await data;
-
   const parseDate = d3.timeParse("%Y-%m-%d");
+  const dataWithRunningTotal = [];
 
-  const xAccessor = (d) => parseDate(d.Date);
-  const yAccessor = (d) => parseInt(d.TPM);
-
-  const dataWithRunningTotal = dataset.map((d, i) => ({
-    ...d,
-    TPM_running_total: d3.sum(dataset.slice(0, i + 1), yAccessor),
-  }));
+  await Promise.all(
+    datasets.map(async (dataset) => {
+      const data = await dataset;
+      dataWithRunningTotal.push(
+        data.map((d, i) => ({
+          ...d,
+          TPM_running_total: d3.sum(data.slice(0, i + 1), (d) =>
+            parseFloat(d.TPM)
+          ),
+        }))
+      );
+    })
+  );
 
   // Dimensions
-  let dimensions = {
+  const dimensions = {
     width: 1000,
     height: 500,
     margins: 50,
@@ -45,36 +50,88 @@ async function draw(data) {
 
   const xScale = d3
     .scaleTime()
-    .domain(d3.extent(dataset, xAccessor))
+    .domain(
+      d3.extent(
+        dataWithRunningTotal.flatMap((data) => data),
+        (d) => parseDate(d.Date)
+      )
+    )
     .range([0, dimensions.ctrWidth]);
 
   // Generators
   const lineGenerator = d3
     .line()
-    .x((d) => xScale(xAccessor(d)))
+    .x((d) => xScale(parseDate(d.Date)))
     .y((d) => yScale(d.TPM_running_total));
 
-  ctr
-    .append("path")
-    .datum(dataWithRunningTotal)
-    .attr("d", lineGenerator)
-    .attr("fill", "none")
-    .attr("stroke", "#30475e")
-    .attr("stroke-width", 2);
+  datasets.forEach((dataset, i) => {
+    ctr
+      .append("path")
+      .datum(dataWithRunningTotal[i])
+      .attr("d", lineGenerator)
+      .attr("fill", "none")
+      .attr("stroke", `hsl(${(i * 40) % 360}, 50%, 50%)`) // generate a unique color for each line
+      .attr("stroke-width", 2)
+      .on("mouseover", function (event, d) {
+        const xCoord = d3.pointer(event)[0];
+        const bisectDate = d3.bisector((d) => parseDate(d.Date)).left;
+        const i = bisectDate(dataWithRunningTotal[0], xCoord, 1);
+        const d0 = dataWithRunningTotal[0][i - 1];
+        const d1 = dataWithRunningTotal[0][i];
+        const currentData =
+          xCoord - parseDate(d0.Date) > parseDate(d1.Date) - xCoord ? d1 : d0;
 
-  // Axis
-  const yAxis = d3.axisLeft(yScale); //will draw a vertical axis with the tickers to the left
+        const tooltip = d3
+          .select("#chart")
+          .append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
 
-  ctr.append("g").call(yAxis);
+        tooltip
+          .html(
+            `<div>Date: ${currentData.Date}</div><div>3PM: ${currentData.TPM_running_total}</div>`
+          )
+          .style("left", `${event.pageX + 10}px`)
+          .style("top", `${event.pageY + 10}px`)
+          .style("opacity", 1);
 
-  const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%Y"));
+        d3.select(this).attr("stroke-width", 4);
+      })
+      .on("mousemove", function (event) {
+        d3.select(".tooltip")
+          .style("left", `${event.pageX + 10}px`)
+          .style("top", `${event.pageY + 10}px`);
+      })
+      .on("mouseleave", function (event, d) {
+        d3.select(".tooltip").remove();
 
-  ctr
-    .append("g")
-    .style("transform", `translateY(${dimensions.ctrHeight}px)`)
-    .call(xAxis);
+        // tooltip
+        //   .html(
+        //     `<div>Date: ${currentData.Date}</div><div>3PM: ${currentData.TPM_running_total}</div>`
+        //   )
+        //   .style("left", `${event.pageX + 10}px`)
+        //   .style("top", `${event.pageY + 10}px`)
+        //   .style("opacity", 1);
+      });
+
+    // Axes
+    const yAxis = d3.axisLeft(yScale);
+    const xAxis = d3.axisBottom(xScale);
+
+    ctr.append("g").attr("class", "axis").call(yAxis);
+
+    ctr
+      .append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(0, ${dimensions.ctrHeight})`)
+      .call(xAxis);
+  });
 }
 
+//Players
 const curry = d3.csv("data/stephcurry/curry-career.csv");
 
-draw(curry);
+//Consolidate data and call function
+const dataset = [curry];
+
+draw(dataset);
