@@ -1,3 +1,7 @@
+// import { dataset } from "./players.js";
+// import dataset from "./players.js";
+import { curry, allen, korver, thompson } from "./players.js";
+
 async function draw(datasets) {
   const parseDate = d3.timeParse("%Y-%m-%d");
   const dataWithRunningTotal = [];
@@ -9,6 +13,8 @@ async function draw(datasets) {
         data.map((d, i) => ({
           ...d,
           playerName: dataset.playerName,
+          isActive: dataset.isActive,
+          featured: dataset.featured,
           TPM_running_total: d3.sum(data.slice(0, i + 1), (d) => +d.TPM),
         }))
       );
@@ -25,12 +31,20 @@ async function draw(datasets) {
   dimensions.ctrWidth = dimensions.width - dimensions.margins * 3; //modified to prevent text cutoff on right side of graph
   dimensions.ctrHeight = dimensions.height - dimensions.margins * 3;
 
+  // Adds dashes lines for each value on the y-axis
+  function make_y_gridlines(yScale) {
+    return d3
+      .axisLeft(yScale)
+      .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500]);
+  }
+
   const svg = d3
     .select("#chart")
     .append("svg")
     .attr("width", dimensions.width)
     .attr("height", dimensions.height);
 
+  // Create your graph's container
   const ctr = svg
     .append("g")
     .attr(
@@ -38,6 +52,7 @@ async function draw(datasets) {
       `translate(${dimensions.margins}, ${dimensions.margins})`
     );
 
+  // Scales
   const yScale = d3
     .scaleLinear()
     .domain([0, 3500])
@@ -68,8 +83,22 @@ async function draw(datasets) {
       .datum(dataWithRunningTotal[datasetIndex])
       .attr("d", lineGenerator)
       .attr("fill", "none")
-      .attr("stroke", `hsl(${(datasetIndex * 40) % 360}, 50%, 50%)`)
-      .attr("stroke-width", 2)
+      .attr("stroke", () => {
+        // Set stroke width based on isActive and featured properties' values
+        const baseColor = dataWithRunningTotal[datasetIndex][0].isActive
+          ? "#6e5fd9"
+          : "#e4e4e4";
+        if (dataWithRunningTotal[datasetIndex][0].featured) {
+          const hslColor = d3.hsl(baseColor);
+          hslColor.l = Math.max(0, hslColor.l - 0.3); // Darken the color by 30%
+          return hslColor;
+        }
+        return baseColor;
+      })
+      .attr(
+        "stroke-width",
+        dataWithRunningTotal[datasetIndex][0].featured ? 2 : 1
+      ) // Set stroke width based on featured property's value
       // Adds a mouseover event listener to the line element
       .on("mouseover", function (event, d) {
         // Get the x coordinate of the mouse cursor
@@ -89,6 +118,13 @@ async function draw(datasets) {
         const currentData =
           xCoord - parseDate(d0.Date) > parseDate(d1.Date) - xCoord ? d1 : d0;
 
+        // Update the player's name text element if featured is set to false
+        if (!firstPoint.featured) {
+          d3.select(`#player-name-${datasetIndex}`).text(
+            `${currentData.playerName}`
+          );
+        }
+
         // Create a tooltip element and set its position and content
         const tooltip = d3
           .select("#chart")
@@ -98,7 +134,7 @@ async function draw(datasets) {
 
         tooltip
           .html(
-            `<div>Date: ${currentData.Date}</div><div>${currentData.playerName}: ${currentData.TPM_running_total}</div>`
+            `<div>Date: ${currentData.Date}</div><div>Three Pointers Made: ${currentData.TPM_running_total}</div>`
           )
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY + 10}px`)
@@ -119,6 +155,10 @@ async function draw(datasets) {
         // Remove the tooltip on mouseleave and unhighlight the line element
         d3.select(".tooltip").remove();
         d3.select(this).attr("stroke-width", 2);
+
+        if (!firstPoint.featured) {
+          d3.select(`#player-name-${datasetIndex}`).text("");
+        }
       });
 
     // Create a text element for a player's name to be added the top of the line
@@ -130,13 +170,15 @@ async function draw(datasets) {
 
     ctr
       .append("text")
+      // Add an ID to the text element for future reference
+      .attr("id", `player-name-${datasetIndex}`)
       // Set the x coordinate to the x position of the last data point in the line
       .attr("x", xScale(parseDate(lastPoint.Date)))
       // Set the y coordinate to the y position of the last data point in the line, with a vertical offset
       .attr("y", yScale(lastPoint.TPM_running_total))
       .attr("dy", "-1.5em")
       .attr("text-anchor", "start")
-      .text(firstPoint.playerName);
+      .text(firstPoint.featured ? firstPoint.playerName : "");
   });
 
   // Axes
@@ -147,26 +189,23 @@ async function draw(datasets) {
 
   ctr
     .append("g")
-    .attr("class", "axis")
-    .attr("transform", `translate(0, ${dimensions.ctrHeight})`)
-    .call(xAxis);
+    // Draws dashes lines using the make_y_gridlones function
+    .attr("class", "grid")
+    .call(
+      make_y_gridlines(yScale).tickSize(-dimensions.ctrWidth).tickFormat("")
+    )
+    .selectAll(".tick line")
+    .attr("stroke-dasharray", "4,4")
+    .attr("stroke-opacity", 0.5)
+    .attr("stroke-width", 1);
 }
 
-//Players
-const curryData = d3.csv("data/stephcurry/curry-career.csv");
-const allenData = d3.csv("data/rayallen/allen-career.csv");
-
-const curry = { playerName: "Steph Curry", data: curryData };
-const allen = { playerName: "Ray Allen", data: allenData };
-
-// const curry = d3.csv("data/stephcurry/curry-career.csv");
-
 //Consolidate data and call function
-const dataset = [curry, allen];
+const dataset = [curry, allen, korver, thompson];
 
 draw(dataset);
 
 //////////////////////////////////
 
 //Current To Do
-// 3. Add 1-2 other players to test
+// 2. Make on hover black and reveal the player's name if featured was set to false. Do this withouth changing the value of featured.
