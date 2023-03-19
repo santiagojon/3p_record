@@ -25,6 +25,8 @@ body {
   position: absolute;
   background-color: white;
   border: 1px solid black;
+  border-radius: 4px;
   padding: 10px;
   pointer-events: none;
+  opacity: 0.9;
 }

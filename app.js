@@ -1,6 +1,4 @@
-// import { dataset } from "./players.js";
-// import dataset from "./players.js";
-import { curry, allen, korver, thompson } from "./players.js";
+import { curry, allen, harden, korver, thompson } from "./players.js";
 
 async function draw(datasets) {
   const parseDate = d3.timeParse("%Y-%m-%d");
@@ -9,13 +7,21 @@ async function draw(datasets) {
   await Promise.all(
     datasets.map(async (dataset) => {
       const data = await dataset.data;
+      const baseColor = dataset.isActive ? "#6e5fd9" : "#e4e4e4";
+      const initialColor = dataset.featured
+        ? d3.hsl(baseColor).darker(0.3)
+        : baseColor;
+
+      const validData = data.filter((d) => d.Date && !isNaN(+d.TPM)); // Filter out invalid data points
+
       dataWithRunningTotal.push(
-        data.map((d, i) => ({
+        validData.map((d, i) => ({
           ...d,
           playerName: dataset.playerName,
           isActive: dataset.isActive,
           featured: dataset.featured,
-          TPM_running_total: d3.sum(data.slice(0, i + 1), (d) => +d.TPM),
+          TPM_running_total: d3.sum(validData.slice(0, i + 1), (d) => +d.TPM),
+          initialColor: initialColor,
         }))
       );
     })
@@ -61,12 +67,10 @@ async function draw(datasets) {
 
   const xScale = d3
     .scaleTime()
-    .domain(
-      d3.extent(
-        dataWithRunningTotal.flatMap((data) => data),
-        (d) => parseDate(d.Date)
-      )
-    )
+    .domain([
+      new Date(1997, 0, 1), // set your desired start date
+      new Date(2023, 0, 1), // set your desired end date
+    ])
     .range([0, dimensions.ctrWidth]);
 
   const lineGenerator = d3
@@ -78,6 +82,8 @@ async function draw(datasets) {
   // It takes an array of datasets as input and uses the index of each dataset to access the corresponding dataWithRunningTotal object
   datasets.forEach((_, datasetIndex) => {
     // Create a line element for the current dataset
+    let endPointCircle = null; // the circle at the end of each line
+
     ctr
       .append("path")
       .datum(dataWithRunningTotal[datasetIndex])
@@ -123,6 +129,13 @@ async function draw(datasets) {
           d3.select(`#player-name-${datasetIndex}`).text(
             `${currentData.playerName}`
           );
+
+          endPointCircle = ctr
+            .append("circle")
+            .attr("cx", xScale(parseDate(lastPoint.Date)))
+            .attr("cy", yScale(lastPoint.TPM_running_total))
+            .attr("r", 4)
+            .attr("fill", "black");
         }
 
         // Create a tooltip element and set its position and content
@@ -141,7 +154,8 @@ async function draw(datasets) {
           .style("opacity", 1);
 
         // Highlight the line element on mouseover
-        d3.select(this).attr("stroke-width", 3);
+        d3.select(this).attr("stroke-width", 2.5);
+        d3.select(this).attr("stroke", "black");
       })
       // Add a mousemove event listener to the line element
       .on("mousemove", function (event) {
@@ -158,7 +172,14 @@ async function draw(datasets) {
 
         if (!firstPoint.featured) {
           d3.select(`#player-name-${datasetIndex}`).text("");
+
+          endPointCircle.remove();
         }
+
+        d3.select(this).attr(
+          "stroke",
+          dataWithRunningTotal[datasetIndex][0].initialColor
+        );
       });
 
     // Create a text element for a player's name to be added the top of the line
@@ -176,9 +197,20 @@ async function draw(datasets) {
       .attr("x", xScale(parseDate(lastPoint.Date)))
       // Set the y coordinate to the y position of the last data point in the line, with a vertical offset
       .attr("y", yScale(lastPoint.TPM_running_total))
-      .attr("dy", "-1.5em")
+      // Set the location of the player's name in relation to the circle
+      .attr("dx", "0.5em")
       .attr("text-anchor", "start")
       .text(firstPoint.featured ? firstPoint.playerName : "");
+
+    // Add this new block to create a circle element for the bullet point
+    if (firstPoint.featured) {
+      ctr
+        .append("circle")
+        .attr("cx", xScale(parseDate(lastPoint.Date)))
+        .attr("cy", yScale(lastPoint.TPM_running_total))
+        .attr("r", 4)
+        .attr("fill", firstPoint.initialColor);
+    }
   });
 
   // Axes
@@ -187,25 +219,31 @@ async function draw(datasets) {
 
   ctr.append("g").attr("class", "axis").call(yAxis);
 
+  //Adds x-axis and uses transform to make visisble
   ctr
     .append("g")
-    // Draws dashes lines using the make_y_gridlones function
+    .attr("class", "axis")
+    .attr("transform", `translate(0, ${dimensions.ctrHeight})`)
+    .call(xAxis);
+
+  //Adds horizontal gridlines for y-axis values
+  ctr
+    .append("g")
     .attr("class", "grid")
     .call(
       make_y_gridlines(yScale).tickSize(-dimensions.ctrWidth).tickFormat("")
     )
     .selectAll(".tick line")
     .attr("stroke-dasharray", "4,4")
-    .attr("stroke-opacity", 0.5)
+    .attr("stroke-opacity", 0.2)
     .attr("stroke-width", 1);
 }
 
 //Consolidate data and call function
-const dataset = [curry, allen, korver, thompson];
+const dataset = [curry, allen, harden, korver, thompson];
 
 draw(dataset);
 
 //////////////////////////////////
 
 //Current To Do
-// 2. Make on hover black and reveal the player's name if featured was set to false. Do this withouth changing the value of featured.

@@ -1,6 +1,7 @@
 //Players
 const curryData = d3.csv("data/stephcurry/curry-career.csv");
 const allenData = d3.csv("data/rayallen/allen-career.csv");
+const hardenData = d3.csv("data/jamesharden/harden-career.csv");
 const korverData = d3.csv("data/kylekorver/korver-career.csv");
 const thompsonData = d3.csv("data/klaythompson/thompson-career.csv");
 
@@ -16,6 +17,13 @@ export const allen = {
   playerName: "Ray Allen",
   data: allenData,
   isActive: false,
+  featured: true,
+};
+
+export const harden = {
+  playerName: "James Harden",
+  data: hardenData,
+  isActive: true,
   featured: true,
 };
 
