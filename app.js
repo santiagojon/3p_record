@@ -68,8 +68,8 @@ async function draw(datasets) {
   const xScale = d3
     .scaleTime()
     .domain([
-      new Date(1997, 0, 1), // set your desired start date
-      new Date(2023, 0, 1), // set your desired end date
+      new Date(1996, 9, 11), // set your desired start date
+      new Date(2023, 0, 5), // set your desired end date
     ])
     .range([0, dimensions.ctrWidth]);
 
@@ -247,3 +247,12 @@ draw(dataset);
 //////////////////////////////////
 
 //Current To Do
+// 4. Add 10+ other players
+// 5. Add conditional for showing only Curry's current total
+
+//Final
+//- Top 50 players on list
+//- Select younger players who are known for being making a lot of threes since the "three point era" began
+//- A way to filter out the colors of other featured players and just leaving the younger players
+// This brings up other stats??? To paint a picture of how much more they're making and when they may overtake Steph's record
+//Research reddit boards/elsewhere to see if this conversation has already been had before. Who are those players?
