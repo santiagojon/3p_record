@@ -22,8 +22,8 @@ async function draw(datasets) {
     margins: 50,
   };
 
-  dimensions.ctrWidth = dimensions.width - dimensions.margins * 2;
-  dimensions.ctrHeight = dimensions.height - dimensions.margins * 2;
+  dimensions.ctrWidth = dimensions.width - dimensions.margins * 3; //modified to prevent text cutoff on right side of graph
+  dimensions.ctrHeight = dimensions.height - dimensions.margins * 3;
 
   const svg = d3
     .select("#chart")
@@ -59,7 +59,10 @@ async function draw(datasets) {
     .x((d) => xScale(parseDate(d.Date)))
     .y((d) => yScale(d.TPM_running_total));
 
+  // This loop iterates over each dataset in the input array and creates a line and text element for each one
+  // It takes an array of datasets as input and uses the index of each dataset to access the corresponding dataWithRunningTotal object
   datasets.forEach((_, datasetIndex) => {
+    // Create a line element for the current dataset
     ctr
       .append("path")
       .datum(dataWithRunningTotal[datasetIndex])
@@ -67,8 +70,11 @@ async function draw(datasets) {
       .attr("fill", "none")
       .attr("stroke", `hsl(${(datasetIndex * 40) % 360}, 50%, 50%)`)
       .attr("stroke-width", 2)
+      // Adds a mouseover event listener to the line element
       .on("mouseover", function (event, d) {
+        // Get the x coordinate of the mouse cursor
         const xCoord = xScale.invert(d3.pointer(event)[0]);
+        // Use bisectDate to find the index of the closest data point to the mouse cursor
         const bisectDate = d3.bisector((d) => parseDate(d.Date)).left;
         const i = bisectDate(
           dataWithRunningTotal[datasetIndex],
@@ -76,11 +82,14 @@ async function draw(datasets) {
           1,
           dataWithRunningTotal[datasetIndex].length - 1
         );
+        // Get the data points before and after the closest data point
         const d0 = dataWithRunningTotal[datasetIndex][i - 1];
         const d1 = dataWithRunningTotal[datasetIndex][i];
+        // Determine which data point is closer to the mouse cursor
         const currentData =
           xCoord - parseDate(d0.Date) > parseDate(d1.Date) - xCoord ? d1 : d0;
 
+        // Create a tooltip element and set its position and content
         const tooltip = d3
           .select("#chart")
           .append("div")
@@ -95,19 +104,24 @@ async function draw(datasets) {
           .style("top", `${event.pageY + 10}px`)
           .style("opacity", 1);
 
-        d3.select(this).attr("stroke-width", 4);
+        // Highlight the line element on mouseover
+        d3.select(this).attr("stroke-width", 3);
       })
+      // Add a mousemove event listener to the line element
       .on("mousemove", function (event) {
+        // Update the position of the tooltip on mousemove
         d3.select(".tooltip")
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY + 10}px`);
       })
+      // Add a mouseleave event listener to the line element
       .on("mouseleave", function (event, d) {
+        // Remove the tooltip on mouseleave and unhighlight the line element
         d3.select(".tooltip").remove();
         d3.select(this).attr("stroke-width", 2);
       });
 
-    // Add player's name at the top of the line
+    // Create a text element for a player's name to be added the top of the line
     const firstPoint = dataWithRunningTotal[datasetIndex][0];
     const lastPoint =
       dataWithRunningTotal[datasetIndex][
@@ -116,9 +130,11 @@ async function draw(datasets) {
 
     ctr
       .append("text")
+      // Set the x coordinate to the x position of the last data point in the line
       .attr("x", xScale(parseDate(lastPoint.Date)))
+      // Set the y coordinate to the y position of the last data point in the line, with a vertical offset
       .attr("y", yScale(lastPoint.TPM_running_total))
-      .attr("dy", "-0.5em")
+      .attr("dy", "-1.5em")
       .attr("text-anchor", "start")
       .text(firstPoint.playerName);
   });
