@@ -1,23 +1,21 @@
 async function draw(datasets) {
-  // Data
   const parseDate = d3.timeParse("%Y-%m-%d");
   const dataWithRunningTotal = [];
 
   await Promise.all(
     datasets.map(async (dataset) => {
-      const data = await dataset;
+      const data = await dataset.data;
       dataWithRunningTotal.push(
         data.map((d, i) => ({
           ...d,
-          TPM_running_total: d3.sum(data.slice(0, i + 1), (d) =>
-            parseFloat(d.TPM)
-          ),
+          playerName: dataset.playerName,
+          TPM_running_total: d3.sum(data.slice(0, i + 1), (d) => +d.TPM),
         }))
       );
     })
   );
 
-  // Dimensions
+  //Dimensions
   const dimensions = {
     width: 1000,
     height: 500,
@@ -27,7 +25,6 @@ async function draw(datasets) {
   dimensions.ctrWidth = dimensions.width - dimensions.margins * 2;
   dimensions.ctrHeight = dimensions.height - dimensions.margins * 2;
 
-  // Draw Image
   const svg = d3
     .select("#chart")
     .append("svg")
@@ -35,16 +32,15 @@ async function draw(datasets) {
     .attr("height", dimensions.height);
 
   const ctr = svg
-    .append("g") // <g>
+    .append("g")
     .attr(
       "transform",
       `translate(${dimensions.margins}, ${dimensions.margins})`
     );
 
-  // Scales
   const yScale = d3
     .scaleLinear()
-    .domain([0, 3500]) //swap with the current record. make dynamic
+    .domain([0, 3500])
     .range([dimensions.ctrHeight, 0])
     .nice();
 
@@ -58,26 +54,30 @@ async function draw(datasets) {
     )
     .range([0, dimensions.ctrWidth]);
 
-  // Generators
   const lineGenerator = d3
     .line()
     .x((d) => xScale(parseDate(d.Date)))
     .y((d) => yScale(d.TPM_running_total));
 
-  datasets.forEach((dataset, i) => {
+  datasets.forEach((_, datasetIndex) => {
     ctr
       .append("path")
-      .datum(dataWithRunningTotal[i])
+      .datum(dataWithRunningTotal[datasetIndex])
       .attr("d", lineGenerator)
       .attr("fill", "none")
-      .attr("stroke", `hsl(${(i * 40) % 360}, 50%, 50%)`) // generate a unique color for each line
+      .attr("stroke", `hsl(${(datasetIndex * 40) % 360}, 50%, 50%)`)
       .attr("stroke-width", 2)
       .on("mouseover", function (event, d) {
-        const xCoord = d3.pointer(event)[0];
+        const xCoord = xScale.invert(d3.pointer(event)[0]);
         const bisectDate = d3.bisector((d) => parseDate(d.Date)).left;
-        const i = bisectDate(dataWithRunningTotal[0], xCoord, 1);
-        const d0 = dataWithRunningTotal[0][i - 1];
-        const d1 = dataWithRunningTotal[0][i];
+        const i = bisectDate(
+          dataWithRunningTotal[datasetIndex],
+          xCoord,
+          1,
+          dataWithRunningTotal[datasetIndex].length - 1
+        );
+        const d0 = dataWithRunningTotal[datasetIndex][i - 1];
+        const d1 = dataWithRunningTotal[datasetIndex][i];
         const currentData =
           xCoord - parseDate(d0.Date) > parseDate(d1.Date) - xCoord ? d1 : d0;
 
@@ -89,7 +89,7 @@ async function draw(datasets) {
 
         tooltip
           .html(
-            `<div>Date: ${currentData.Date}</div><div>3PM: ${currentData.TPM_running_total}</div>`
+            `<div>Date: ${currentData.Date}</div><div>${currentData.playerName}: ${currentData.TPM_running_total}</div>`
           )
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY + 10}px`)
@@ -104,28 +104,46 @@ async function draw(datasets) {
       })
       .on("mouseleave", function (event, d) {
         d3.select(".tooltip").remove();
+        d3.select(this).attr("stroke-width", 2);
       });
 
-    // Axes
-    const yAxis = d3.axisLeft(yScale);
-    const xAxis = d3.axisBottom(xScale);
-
-    ctr.append("g").attr("class", "axis").call(yAxis);
+    // Add player's name at the top of the line
+    const firstPoint = dataWithRunningTotal[datasetIndex][0];
+    const lastPoint =
+      dataWithRunningTotal[datasetIndex][
+        dataWithRunningTotal[datasetIndex].length - 1
+      ];
 
     ctr
-      .append("g")
-      .attr("class", "axis")
-      .attr("transform", `translate(0, ${dimensions.ctrHeight})`)
-      .call(xAxis);
+      .append("text")
+      .attr("x", xScale(parseDate(lastPoint.Date)))
+      .attr("y", yScale(lastPoint.TPM_running_total))
+      .attr("dy", "-0.5em")
+      .attr("text-anchor", "start")
+      .text(firstPoint.playerName);
   });
+
+  // Axes
+  const yAxis = d3.axisLeft(yScale);
+  const xAxis = d3.axisBottom(xScale);
+
+  ctr.append("g").attr("class", "axis").call(yAxis);
+
+  ctr
+    .append("g")
+    .attr("class", "axis")
+    .attr("transform", `translate(0, ${dimensions.ctrHeight})`)
+    .call(xAxis);
 }
 
 //Players
-// const curryArr = d3.csv("data/stephcurry/curry-career.csv");
-// const curry = { playerName: "Steph Curry", data: curryArr };
+const curryData = d3.csv("data/stephcurry/curry-career.csv");
+const allenData = d3.csv("data/rayallen/allen-career.csv");
 
-const curry = d3.csv("data/stephcurry/curry-career.csv");
-const allen = d3.csv("data/rayallen/allen-career.csv");
+const curry = { playerName: "Steph Curry", data: curryData };
+const allen = { playerName: "Ray Allen", data: allenData };
+
+// const curry = d3.csv("data/stephcurry/curry-career.csv");
 
 //Consolidate data and call function
 const dataset = [curry, allen];
@@ -135,6 +153,4 @@ draw(dataset);
 //////////////////////////////////
 
 //Current To Do
-// 1. Add player name to the top of each line
-// 2. Fix tooltip. It's showing the same date and nothing for 3PM
 // 3. Add 1-2 other players to test
