@@ -1,4 +1,14 @@
-import { curry, allen, harden, korver, thompson } from "./players.js";
+import {
+  curry,
+  allen,
+  harden,
+  miller,
+  korver,
+  carter,
+  thompson,
+  nash,
+  hield,
+} from "./players.js";
 
 async function draw(datasets) {
   const parseDate = d3.timeParse("%Y-%m-%d");
@@ -68,7 +78,7 @@ async function draw(datasets) {
   const xScale = d3
     .scaleTime()
     .domain([
-      new Date(1996, 9, 11), // set your desired start date
+      new Date(1987, 9, 11), // set your desired start date
       new Date(2023, 0, 5), // set your desired end date
     ])
     .range([0, dimensions.ctrWidth]);
@@ -105,7 +115,10 @@ async function draw(datasets) {
         "stroke-width",
         dataWithRunningTotal[datasetIndex][0].featured ? 2 : 1
       ) // Set stroke width based on featured property's value
-      // Adds a mouseover event listener to the line element
+
+      /////////////////////////////////////////Mouse Events/////////////////////////////////////////
+
+      /////////////////////////////////////////Mouse Over
       .on("mouseover", function (event, d) {
         // Get the x coordinate of the mouse cursor
         const xCoord = xScale.invert(d3.pointer(event)[0]);
@@ -147,24 +160,24 @@ async function draw(datasets) {
 
         tooltip
           .html(
-            `<div>Date: ${currentData.Date}</div><div>Three Pointers Made: ${currentData.TPM_running_total}</div>`
+            `<div>Date: ${currentData.Date}</div><div>Total 3-Pointers Made: ${currentData.TPM_running_total}</div>`
           )
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY + 10}px`)
           .style("opacity", 1);
 
         // Highlight the line element on mouseover
-        d3.select(this).attr("stroke-width", 2.5);
+        d3.select(this).attr("stroke-width", 2);
         d3.select(this).attr("stroke", "black");
       })
-      // Add a mousemove event listener to the line element
+      /////////////////////////////////////////Mouse Move
       .on("mousemove", function (event) {
         // Update the position of the tooltip on mousemove
         d3.select(".tooltip")
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY + 10}px`);
       })
-      // Add a mouseleave event listener to the line element
+      /////////////////////////////////////////Mouse Leave
       .on("mouseleave", function (event, d) {
         // Remove the tooltip on mouseleave and unhighlight the line element
         d3.select(".tooltip").remove();
@@ -181,6 +194,7 @@ async function draw(datasets) {
           dataWithRunningTotal[datasetIndex][0].initialColor
         );
       });
+    /////////////////////////////////////////Mouse Events/////////////////////////////////////////
 
     // Create a text element for a player's name to be added the top of the line
     const firstPoint = dataWithRunningTotal[datasetIndex][0];
@@ -213,6 +227,18 @@ async function draw(datasets) {
     }
   });
 
+  // Adds vertical line for the year when 3 pointers overtook midrange shots
+  ctr
+    .append("line")
+    .attr("x1", xScale(new Date(2015, 0, 1)))
+    .attr("y1", 0)
+    .attr("x2", xScale(new Date(2015, 0, 1)))
+    .attr("y2", dimensions.ctrHeight)
+    .attr("stroke", "black")
+    .attr("stroke-dasharray", "4,4")
+    .attr("stroke-opacity", 0.2)
+    .attr("stroke-width", 1);
+
   // Axes
   const yAxis = d3.axisLeft(yScale);
   const xAxis = d3.axisBottom(xScale);
@@ -240,13 +266,24 @@ async function draw(datasets) {
 }
 
 //Consolidate data and call function
-const dataset = [curry, allen, harden, korver, thompson];
+const dataset = [
+  curry,
+  allen,
+  harden,
+  miller,
+  korver,
+  carter,
+  thompson,
+  nash,
+  hield,
+];
 
 draw(dataset);
 
 //////////////////////////////////
 
 //Current To Do
+// 1. Change tooltip to display total number and year retired. Add better styling
 // 4. Add 10+ other players
 // 5. Add conditional for showing only Curry's current total
 
@@ -256,3 +293,6 @@ draw(dataset);
 //- A way to filter out the colors of other featured players and just leaving the younger players
 // This brings up other stats??? To paint a picture of how much more they're making and when they may overtake Steph's record
 //Research reddit boards/elsewhere to see if this conversation has already been had before. Who are those players?
+//Projected 5 year growth for all current active players based on their average since the 3 point era
+
+// Create a color of slider that changes the date range on the x-axis
