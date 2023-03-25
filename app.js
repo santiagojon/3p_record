@@ -45,20 +45,24 @@ async function draw(datasets) {
   };
 
   dimensions.ctrWidth = dimensions.width - dimensions.margins * 3; //modified to prevent text cutoff on right side of graph
-  dimensions.ctrHeight = dimensions.height - dimensions.margins * 3;
+  dimensions.ctrHeight = dimensions.height - dimensions.margins * 4;
 
   // Adds dashes lines for each value on the y-axis
   function make_y_gridlines(yScale) {
     return d3
       .axisLeft(yScale)
-      .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500]);
+      .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500])
+      .tickSize(-dimensions.ctrWidth)
+      .tickFormat("")
+      .tickSizeOuter(0);
   }
 
   const svg = d3
     .select("#chart")
     .append("svg")
-    .attr("width", dimensions.width)
-    .attr("height", dimensions.height);
+    .attr("viewBox", `0 0 ${dimensions.width} ${dimensions.height}`)
+    .attr("width", "100%")
+    .attr("height", "100%");
 
   // Create your graph's container
   const ctr = svg
@@ -67,6 +71,8 @@ async function draw(datasets) {
       "transform",
       `translate(${dimensions.margins}, ${dimensions.margins})`
     );
+
+  svg.append("style").text(".y.axis path {display: none;}");
 
   // Scales
   const yScale = d3
@@ -83,6 +89,7 @@ async function draw(datasets) {
     ])
     .range([0, dimensions.ctrWidth]);
 
+  //Creates player lines
   const lineGenerator = d3
     .line()
     .x((d) => xScale(parseDate(d.Date)))
@@ -91,6 +98,12 @@ async function draw(datasets) {
   // This loop iterates over each dataset in the input array and creates a line and text element for each one
   // It takes an array of datasets as input and uses the index of each dataset to access the corresponding dataWithRunningTotal object
   datasets.forEach((_, datasetIndex) => {
+    //Finds location of endPoint circle for the current record holder - Steph Curry
+    const stephCurryData = dataWithRunningTotal.find(
+      (data) => data[0].playerName === "Steph Curry"
+    );
+    const lastStephCurryPoint = stephCurryData[stephCurryData.length - 1];
+
     // Create a line element for the current dataset
     let endPointCircle = null; // the circle at the end of each line
 
@@ -216,6 +229,22 @@ async function draw(datasets) {
       .attr("text-anchor", "start")
       .text(firstPoint.featured ? firstPoint.playerName : "");
 
+    // Creates horizontal line for the current record holder - Steph Curry
+    if (firstPoint.playerName === "Steph Curry") {
+      // Get the y coordinate of the circle end point for Steph Curry
+      const yPos = yScale(lastStephCurryPoint.TPM_running_total);
+      ctr
+        .append("line")
+        .attr("x1", xScale(xScale.domain()[0]))
+        .attr("y1", yPos)
+        .attr("x2", xScale(xScale.domain()[1]))
+        .attr("y2", yPos)
+        .attr("stroke", "black")
+        .attr("stroke-dasharray", "8")
+        .attr("stroke-opacity", 0.5)
+        .attr("stroke-width", 2);
+    }
+
     // Add this new block to create a circle element for the bullet point
     if (firstPoint.featured) {
       ctr
@@ -236,14 +265,30 @@ async function draw(datasets) {
     .attr("y2", dimensions.ctrHeight)
     .attr("stroke", "black")
     .attr("stroke-dasharray", "4,4")
-    .attr("stroke-opacity", 0.2)
+    .attr("stroke-opacity", 0.4)
     .attr("stroke-width", 1);
 
   // Axes
-  const yAxis = d3.axisLeft(yScale);
+  const yAxis = d3
+    .axisLeft(yScale)
+    .tickSizeOuter(0)
+    .tickSizeInner(-dimensions.ctrWidth)
+    .tickPadding(15)
+    .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500]);
+
   const xAxis = d3.axisBottom(xScale);
 
-  ctr.append("g").attr("class", "axis").call(yAxis);
+  //Adds y-axis and uses transform to make visisble
+  ctr
+    .append("g")
+    .attr("class", "axis y-axis")
+    .attr("id", "y-axis")
+    .call(yAxis)
+    .selectAll(".tick line")
+    .attr("stroke-dasharray", "4,4")
+    .attr("stroke-opacity", 0.2)
+    .attr("stroke-width", 1)
+    .attr("transform", `translate(${dimensions.ctrWidth}, 0)`);
 
   //Adds x-axis and uses transform to make visisble
   ctr
@@ -256,11 +301,16 @@ async function draw(datasets) {
   ctr
     .append("g")
     .attr("class", "grid")
+    .attr("id", "y-axis2")
+    .attr("transform", `translate(0, 0)`)
     .call(
-      make_y_gridlines(yScale).tickSize(-dimensions.ctrWidth).tickFormat("")
+      make_y_gridlines(yScale)
+        .tickSize(-dimensions.ctrWidth)
+        .tickFormat("")
+        .tickSizeOuter(0)
     )
     .selectAll(".tick line")
-    .attr("stroke-dasharray", "4,4")
+    .attr("stroke-dasharray", "2,4")
     .attr("stroke-opacity", 0.2)
     .attr("stroke-width", 1);
 }

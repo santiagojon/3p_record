@@ -11,6 +11,7 @@ export const curry = {
   data: curryData,
   isActive: true,
   featured: true,
+  mostRecentActiveYear: "2023",
 };
 
 export const allen = {
@@ -18,6 +19,7 @@ export const allen = {
   data: allenData,
   isActive: false,
   featured: true,
+  mostRecentActiveYear: "2014",
 };
 
 export const harden = {
@@ -25,6 +27,7 @@ export const harden = {
   data: hardenData,
   isActive: true,
   featured: true,
+  mostRecentActiveYear: "2023",
 };
 
 export const miller = {
@@ -32,6 +35,7 @@ export const miller = {
   data: d3.csv("data/reggiemiller/miller-career.csv"),
   isActive: false,
   featured: true,
+  mostRecentActiveYear: "2005",
 };
 
 export const korver = {
@@ -39,6 +43,7 @@ export const korver = {
   data: korverData,
   isActive: false,
   featured: false,
+  mostRecentActiveYear: "2020",
 };
 
 export const lillard = {};
@@ -48,6 +53,7 @@ export const carter = {
   data: d3.csv("data/vincecarter/carter-career.csv"),
   isActive: false,
   featured: false,
+  mostRecentActiveYear: "2020",
 };
 
 export const terry = {};
@@ -62,6 +68,7 @@ export const thompson = {
   data: thompsonData,
   isActive: true,
   featured: false,
+  mostRecentActiveYear: "2023",
 };
 
 export const nash = {
@@ -69,6 +76,7 @@ export const nash = {
   data: d3.csv("data/stevenash/nash-career.csv"),
   isActive: false,
   featured: false,
+  mostRecentActiveYear: "2014",
 };
 
 //21-30
@@ -77,6 +85,7 @@ export const hield = {
   data: d3.csv("data/buddyhield/hield-career.csv"),
   isActive: true,
   featured: false,
+  mostRecentActiveYear: "2023",
 };
 
 //31-40

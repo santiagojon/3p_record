@@ -30,3 +30,11 @@ body {
   pointer-events: none;
   opacity: 0.9;
 }
+
+#y-axis path.domain {
+  display: none !important;
+}
+
+#y-axis2 path.domain {
+  display: none !important;
+}
