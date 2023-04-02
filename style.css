@@ -18,15 +18,19 @@ body {
 } */
 
 .price {
-  font-weight: bold;
+  font-weight: 700;
+}
+
+.light {
+  font-weight: 400;
 }
 
 .tooltip {
-  position: absolute;
+  /* position: absolute; */
   background-color: white;
   border: 1px solid black;
   border-radius: 4px;
-  padding: 10px;
+  padding: 1rem;
   pointer-events: none;
   opacity: 0.9;
 }

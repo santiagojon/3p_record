@@ -4,10 +4,13 @@ import {
   harden,
   miller,
   korver,
+  lillard,
   carter,
+  terry,
   thompson,
   nash,
   hield,
+  tatum,
 } from "./players.js";
 
 async function draw(datasets) {
@@ -30,6 +33,7 @@ async function draw(datasets) {
           playerName: dataset.playerName,
           isActive: dataset.isActive,
           featured: dataset.featured,
+          mostRecentActiveYear: dataset.mostRecentActiveYear,
           TPM_running_total: d3.sum(validData.slice(0, i + 1), (d) => +d.TPM),
           initialColor: initialColor,
         }))
@@ -72,8 +76,6 @@ async function draw(datasets) {
       `translate(${dimensions.margins}, ${dimensions.margins})`
     );
 
-  svg.append("style").text(".y.axis path {display: none;}");
-
   // Scales
   const yScale = d3
     .scaleLinear()
@@ -89,16 +91,29 @@ async function draw(datasets) {
     ])
     .range([0, dimensions.ctrWidth]);
 
+  // Creates clip path to be added to lines in loop
+  const clipPathId = "clip-path";
+  svg
+    .append("clipPath")
+    .attr("id", clipPathId)
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", dimensions.ctrWidth)
+    .attr("height", dimensions.ctrHeight);
+
   //Creates player lines
   const lineGenerator = d3
     .line()
     .x((d) => xScale(parseDate(d.Date)))
     .y((d) => yScale(d.TPM_running_total));
 
+  /////////////////////////////////////////Loop/////////////////////////////////////////
   // This loop iterates over each dataset in the input array and creates a line and text element for each one
   // It takes an array of datasets as input and uses the index of each dataset to access the corresponding dataWithRunningTotal object
   datasets.forEach((_, datasetIndex) => {
     //Finds location of endPoint circle for the current record holder - Steph Curry
+    // This will be used later when drawing to create a horizontal line
     const stephCurryData = dataWithRunningTotal.find(
       (data) => data[0].playerName === "Steph Curry"
     );
@@ -128,6 +143,7 @@ async function draw(datasets) {
         "stroke-width",
         dataWithRunningTotal[datasetIndex][0].featured ? 2 : 1
       ) // Set stroke width based on featured property's value
+      .attr("clip-path", `url(#${clipPathId})`) // Apply the clipping area
 
       /////////////////////////////////////////Mouse Events/////////////////////////////////////////
 
@@ -156,6 +172,11 @@ async function draw(datasets) {
             `${currentData.playerName}`
           );
 
+          // d3,
+          //   select(".totalAccumulationText").text(
+          //     `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
+          //   );
+
           endPointCircle = ctr
             .append("circle")
             .attr("cx", xScale(parseDate(lastPoint.Date)))
@@ -163,6 +184,8 @@ async function draw(datasets) {
             .attr("r", 4)
             .attr("fill", "black");
         }
+
+        // Show tspan on hover
 
         // Create a tooltip element and set its position and content
         const tooltip = d3
@@ -174,6 +197,7 @@ async function draw(datasets) {
         tooltip
           .html(
             `<div>Date: ${currentData.Date}</div><div>Total 3-Pointers Made: ${currentData.TPM_running_total}</div>`
+            // Add more? Instead of a quick blurb, add more info? (TPA, %, Opponent)?
           )
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY + 10}px`)
@@ -207,29 +231,85 @@ async function draw(datasets) {
           dataWithRunningTotal[datasetIndex][0].initialColor
         );
       });
-    /////////////////////////////////////////Mouse Events/////////////////////////////////////////
+    /////////////////////////////////////////Mouse Events - End/////////////////////////////////////////
 
-    // Create a text element for a player's name to be added the top of the line
+    /////////////////////////////////////////Draw/////////////////////////////////////////
+
+    // Add a clip path to the text element to prevent it from overlapping with the lines
+    const defs = svg.append("defs");
+    const clipPath = defs.append("clipPath").attr("id", "text-clip-path");
+    clipPath
+      .append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", dimensions.ctrWidth + 10)
+      .attr("height", dimensions.ctrHeight);
+
+    // Draw a text element for a player's name to be added the top of the line
     const firstPoint = dataWithRunningTotal[datasetIndex][0];
     const lastPoint =
       dataWithRunningTotal[datasetIndex][
         dataWithRunningTotal[datasetIndex].length - 1
       ];
 
-    ctr
+    // Apply the clip path to the parent <g> element
+
+    const playerNameText = ctr
+      .append("g")
+      .attr("clip-path", "url(#text-clip-path)")
+      // .attr("id", `player-name-${datasetIndex}`)
+      // .attr(
+      //   "transform",
+      //   `translate(${xScale(parseDate(lastPoint.Date))}, ${yScale(
+      //     lastPoint.TPM_running_total
+      //   )})`
+      // )
+
       .append("text")
-      // Add an ID to the text element for future reference
+      .attr("clip-path", "url(#text-clip-path)")
       .attr("id", `player-name-${datasetIndex}`)
-      // Set the x coordinate to the x position of the last data point in the line
       .attr("x", xScale(parseDate(lastPoint.Date)))
-      // Set the y coordinate to the y position of the last data point in the line, with a vertical offset
       .attr("y", yScale(lastPoint.TPM_running_total))
-      // Set the location of the player's name in relation to the circle
       .attr("dx", "0.5em")
       .attr("text-anchor", "start")
-      .text(firstPoint.featured ? firstPoint.playerName : "");
+      .attr("z-index", 2)
+      .text(firstPoint.featured ? firstPoint.playerName : "")
+      .style("font-weight", (d) => {
+        if (
+          firstPoint.playerName === "Steph Curry" ||
+          firstPoint.playerName === "Ray Allen"
+        ) {
+          return "bold";
+        }
+      })
+      .style("stroke-width", "2px") // set the stroke width to 2 pixels
+      .style("fill", "black") // set the text color to black
+      .append("tspan")
+      .attr("x", xScale(parseDate(lastPoint.Date)))
+      .attr("dx", "0.5em")
+      .attr("dy", "1.2em")
+      .text(
+        `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
+      )
+      .attr("class", "light")
+      .attr("class", "accumulatedTotalText")
+      .style("stroke-width", "2px") // set the stroke width to 2 pixels
+      .style("fill", "black") // set the text color to black
 
-    // Creates horizontal line for the current record holder - Steph Curry
+      .append("rect")
+      // .attr("x", -padding / 2)
+      .attr("y", -10)
+      // .attr("width", rectWidth)
+      .attr("height", 30)
+      .attr("fill", "#f7f7f7")
+      .attr("rx", 5)
+      .attr("ry", 5)
+      // .attr("x", padding / 2)
+      .attr("y", 0)
+      .attr("text-anchor", "start")
+      .style("fill", "white");
+
+    // Draw a horizontal line for the current record holder - Steph Curry
     if (firstPoint.playerName === "Steph Curry") {
       // Get the y coordinate of the circle end point for Steph Curry
       const yPos = yScale(lastStephCurryPoint.TPM_running_total);
@@ -256,7 +336,7 @@ async function draw(datasets) {
     }
   });
 
-  // Adds vertical line for the year when 3 pointers overtook midrange shots
+  // Draw a vertical line for the year when 3 pointers overtook midrange shots
   ctr
     .append("line")
     .attr("x1", xScale(new Date(2015, 0, 1)))
@@ -268,7 +348,7 @@ async function draw(datasets) {
     .attr("stroke-opacity", 0.4)
     .attr("stroke-width", 1);
 
-  // Axes
+  // Axes - Setup
   const yAxis = d3
     .axisLeft(yScale)
     .tickSizeOuter(0)
@@ -278,7 +358,7 @@ async function draw(datasets) {
 
   const xAxis = d3.axisBottom(xScale);
 
-  //Adds y-axis and uses transform to make visisble
+  // Draws the y-axis and uses transform to make visisble
   ctr
     .append("g")
     .attr("class", "axis y-axis")
@@ -290,14 +370,14 @@ async function draw(datasets) {
     .attr("stroke-width", 1)
     .attr("transform", `translate(${dimensions.ctrWidth}, 0)`);
 
-  //Adds x-axis and uses transform to make visisble
+  // Draws the x-axis and uses transform to make visisble
   ctr
     .append("g")
     .attr("class", "axis")
     .attr("transform", `translate(0, ${dimensions.ctrHeight})`)
     .call(xAxis);
 
-  //Adds horizontal gridlines for y-axis values
+  // Draws the horizontal gridlines for y-axis values
   ctr
     .append("g")
     .attr("class", "grid")
@@ -322,15 +402,31 @@ const dataset = [
   harden,
   miller,
   korver,
+  lillard,
   carter,
+  terry,
   thompson,
   nash,
   hield,
+  tatum,
 ];
 
 draw(dataset);
 
 //////////////////////////////////
+
+// Where I left off.
+
+// I thought it might make sense to have all tspan text that goes under player names automatically visible.
+// But create a conditinal somewhere that sayings if the player index or name isn't (0,1 or just by names), set it to hidden
+// The onhover toggles that CSS
+
+// Once that's done go back to setting up a clip path
+// Place the text in there with a background and all that
+// Make sure everything is visible
+// Refactor conditional and onhover to target the clip path instead of just the text
+
+////////////
 
 //Current To Do
 // 1. Change tooltip to display total number and year retired. Add better styling

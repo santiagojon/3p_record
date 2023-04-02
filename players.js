@@ -46,7 +46,13 @@ export const korver = {
   mostRecentActiveYear: "2020",
 };
 
-export const lillard = {};
+export const lillard = {
+  playerName: "Damian Lillard",
+  data: d3.csv("data/damianlillard/lillard-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
 export const carter = {
   playerName: "Vince Carter",
@@ -56,7 +62,13 @@ export const carter = {
   mostRecentActiveYear: "2020",
 };
 
-export const terry = {};
+export const terry = {
+  playerName: "Jason Terry",
+  data: d3.csv("data/jasonterry/terry-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2018",
+};
 
 export const james = {};
 
@@ -91,3 +103,12 @@ export const hield = {
 //31-40
 
 //41-50
+
+//50+
+export const tatum = {
+  playerName: "Jason Tatum",
+  data: d3.csv("data/jasontatum/tatum-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
