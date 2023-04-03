@@ -7,6 +7,7 @@ import {
   lillard,
   carter,
   terry,
+  james,
   thompson,
   nash,
   hield,
@@ -44,7 +45,7 @@ async function draw(datasets) {
   //Dimensions
   const dimensions = {
     width: 1000,
-    height: 500,
+    height: 700,
     margins: 50,
   };
 
@@ -61,12 +62,17 @@ async function draw(datasets) {
       .tickSizeOuter(0);
   }
 
+  const paddingPercentage = 0.1;
+  const paddedWidth = dimensions.width * (1 + paddingPercentage);
+
   const svg = d3
     .select("#chart")
     .append("svg")
-    .attr("viewBox", `0 0 ${dimensions.width} ${dimensions.height}`)
-    .attr("width", "100%")
-    .attr("height", "100%");
+    // .attr("viewBox", `0 0 ${dimensions.width} ${dimensions.height}`)
+    // .attr("width", "100%")
+    // .attr("height", "100%");
+    .attr("width", paddedWidth) // Set the SVG width to the new paddedWidth
+    .attr("height", dimensions.height);
 
   // Create your graph's container
   const ctr = svg
@@ -89,18 +95,18 @@ async function draw(datasets) {
       new Date(1987, 9, 11), // set your desired start date
       new Date(2023, 0, 5), // set your desired end date
     ])
-    .range([0, dimensions.ctrWidth]);
+    .range([0, paddedWidth - dimensions.margins * 3]);
 
   // Creates clip path to be added to lines in loop
-  const clipPathId = "clip-path";
-  svg
-    .append("clipPath")
-    .attr("id", clipPathId)
-    .append("rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", dimensions.ctrWidth)
-    .attr("height", dimensions.ctrHeight);
+  // const clipPathId = "clip-path";
+  // svg
+  //   .append("clipPath")
+  //   .attr("id", clipPathId)
+  //   .append("rect")
+  //   .attr("x", 0)
+  //   .attr("y", 0)
+  //   .attr("width", dimensions.ctrWidth)
+  //   .attr("height", dimensions.ctrHeight);
 
   //Creates player lines
   const lineGenerator = d3
@@ -131,7 +137,17 @@ async function draw(datasets) {
         // Set stroke width based on isActive and featured properties' values
         const baseColor = dataWithRunningTotal[datasetIndex][0].isActive
           ? "#6e5fd9"
-          : "#e4e4e4";
+          : "#cdcdcd";
+
+        let lineColor = baseColor;
+        if (dataset.isActive && !dataset.featured) {
+          lineColor = d3.color(baseColor).copy({ opacity: 0.1 }).toString();
+        } else if (dataset.featured) {
+          lineColor = d3.hsl(baseColor).darker(0.3);
+        }
+
+        const initialColor = dataset.featured ? lineColor : baseColor;
+
         if (dataWithRunningTotal[datasetIndex][0].featured) {
           const hslColor = d3.hsl(baseColor);
           hslColor.l = Math.max(0, hslColor.l - 0.3); // Darken the color by 30%
@@ -141,9 +157,9 @@ async function draw(datasets) {
       })
       .attr(
         "stroke-width",
-        dataWithRunningTotal[datasetIndex][0].featured ? 2 : 1
+        dataWithRunningTotal[datasetIndex][0].featured ? 2 : 0.5
       ) // Set stroke width based on featured property's value
-      .attr("clip-path", `url(#${clipPathId})`) // Apply the clipping area
+      //.attr("clip-path", `url(#${clipPathId})`) // Apply the clipping area
 
       /////////////////////////////////////////Mouse Events/////////////////////////////////////////
 
@@ -218,7 +234,12 @@ async function draw(datasets) {
       .on("mouseleave", function (event, d) {
         // Remove the tooltip on mouseleave and unhighlight the line element
         d3.select(".tooltip").remove();
-        d3.select(this).attr("stroke-width", 2);
+
+        const originalStrokeWidth = dataWithRunningTotal[datasetIndex][0]
+          .featured
+          ? 2
+          : 0.5;
+        d3.select(this).attr("stroke-width", originalStrokeWidth);
 
         if (!firstPoint.featured) {
           d3.select(`#player-name-${datasetIndex}`).text("");
@@ -236,14 +257,14 @@ async function draw(datasets) {
     /////////////////////////////////////////Draw/////////////////////////////////////////
 
     // Add a clip path to the text element to prevent it from overlapping with the lines
-    const defs = svg.append("defs");
-    const clipPath = defs.append("clipPath").attr("id", "text-clip-path");
-    clipPath
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", dimensions.ctrWidth + 10)
-      .attr("height", dimensions.ctrHeight);
+    // const defs = svg.append("defs");
+    // const clipPath = defs.append("clipPath").attr("id", "text-clip-path");
+    // clipPath
+    //   .append("rect")
+    //   .attr("x", 0)
+    //   .attr("y", 0)
+    //   .attr("width", dimensions.ctrWidth + 10)
+    //   .attr("height", dimensions.ctrHeight);
 
     // Draw a text element for a player's name to be added the top of the line
     const firstPoint = dataWithRunningTotal[datasetIndex][0];
@@ -253,10 +274,9 @@ async function draw(datasets) {
       ];
 
     // Apply the clip path to the parent <g> element
-
     const playerNameText = ctr
-      .append("g")
-      .attr("clip-path", "url(#text-clip-path)")
+      // .append("g")
+      // .attr("clip-path", "url(#text-clip-path)")
       // .attr("id", `player-name-${datasetIndex}`)
       // .attr(
       //   "transform",
@@ -367,7 +387,7 @@ async function draw(datasets) {
     .selectAll(".tick line")
     .attr("stroke-dasharray", "4,4")
     .attr("stroke-opacity", 0.2)
-    .attr("stroke-width", 1)
+    .attr("stroke-width", 0)
     .attr("transform", `translate(${dimensions.ctrWidth}, 0)`);
 
   // Draws the x-axis and uses transform to make visisble
@@ -381,11 +401,11 @@ async function draw(datasets) {
   ctr
     .append("g")
     .attr("class", "grid")
-    .attr("id", "y-axis2")
+    .attr("id", "y-axis")
     .attr("transform", `translate(0, 0)`)
     .call(
       make_y_gridlines(yScale)
-        .tickSize(-dimensions.ctrWidth)
+        .tickSize(-(paddedWidth - dimensions.margins * 3)) // Makes tick line stop to match the x-axis width
         .tickFormat("")
         .tickSizeOuter(0)
     )
@@ -405,6 +425,7 @@ const dataset = [
   lillard,
   carter,
   terry,
+  james,
   thompson,
   nash,
   hield,

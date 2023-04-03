@@ -26,7 +26,7 @@ export const harden = {
   playerName: "James Harden",
   data: hardenData,
   isActive: true,
-  featured: true,
+  featured: false,
   mostRecentActiveYear: "2023",
 };
 
@@ -34,7 +34,7 @@ export const miller = {
   playerName: "Reggie Miller",
   data: d3.csv("data/reggiemiller/miller-career.csv"),
   isActive: false,
-  featured: true,
+  featured: false,
   mostRecentActiveYear: "2005",
 };
 
@@ -70,7 +70,13 @@ export const terry = {
   mostRecentActiveYear: "2018",
 };
 
-export const james = {};
+export const james = {
+  playerName: "Lebron James",
+  data: d3.csv("data/lebronjames/james-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
 export const crawford = {};
 
@@ -90,6 +96,24 @@ export const nash = {
   featured: false,
   mostRecentActiveYear: "2014",
 };
+
+export const pierce = {};
+
+export const lowry = {};
+
+export const george = {};
+
+export const kidd = {};
+
+export const nowitzki = {};
+
+export const johnson = {};
+
+export const redick = {};
+
+export const smith = {};
+
+export const gordon = {};
 
 //21-30
 export const hield = {
