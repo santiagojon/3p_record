@@ -78,9 +78,15 @@ export const james = {
   mostRecentActiveYear: "2023",
 };
 
-export const crawford = {};
+export const crawford = {
+  playerName: "Jamal Crawford",
+  data: d3.csv("data/jamalcrawford/crawford-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2020",
+};
 
-//11-20
+////////// 11-20
 export const thompson = {
   playerName: "Klay Thompson",
   data: thompsonData,
@@ -97,25 +103,79 @@ export const nash = {
   mostRecentActiveYear: "2014",
 };
 
-export const pierce = {};
+export const pierce = {
+  playerName: "Paul Pierce",
+  data: d3.csv("data/paulpierce/pierce-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2017",
+};
 
-export const lowry = {};
+export const lowry = {
+  playerName: "Kyle Lowry",
+  data: d3.csv("data/kylelowry/lowry-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
-export const george = {};
+export const george = {
+  playerName: "Paul George",
+  data: d3.csv("data/paulgeorge/george-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
-export const kidd = {};
+export const kidd = {
+  playerName: "Jason Kidd",
+  data: d3.csv("data/jasonkidd/kidd-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2013",
+};
 
-export const nowitzki = {};
+export const nowitzki = {
+  playerName: "Dirk Nowitzski",
+  data: d3.csv("data/dirknowitzski/nowitzski-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2019",
+};
 
-export const johnson = {};
+export const johnson = {
+  playerName: "Joe Johnson",
+  data: d3.csv("data/joejohnson/johnson-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2022",
+};
 
-export const redick = {};
+export const redick = {
+  playerName: "J.J. Redick",
+  data: d3.csv("data/jjredick/redick-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2021",
+};
 
-export const smith = {};
+export const smith = {
+  playerName: "J.R. Smith",
+  data: d3.csv("data/jrsmith/smith-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2020",
+};
 
-export const gordon = {};
+export const gordon = {
+  playerName: "Eric Gordon",
+  data: d3.csv("data/ericgordon/gordon-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
-//21-30
+////////// 21-30
 export const hield = {
   playerName: "Buddy Hield",
   data: d3.csv("data/buddyhield/hield-career.csv"),
@@ -124,9 +184,9 @@ export const hield = {
   mostRecentActiveYear: "2023",
 };
 
-//31-40
+////////// 31-40
 
-//41-50
+////////// 41-50
 
 //50+
 export const tatum = {

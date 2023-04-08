@@ -1,0 +1,83 @@
+Rk,G,Date,Age,Tm,,Opp,,GS,MP,FG,FGA,FG%,TPM,TPA,3P%,FT,FTA,FT%,ORB,DRB,TRB,AST,STL,BLK,TOV,PF,PTS,GmSc,+/-
+1,1,2010-10-27,20-178,IND,@,SAS,L (-13),0,22:42,1,5,.200,0,3,.000,2,2,1.000,1,2,3,2,2,1,3,2,4,2.5,-1
+2,2,2010-10-29,20-180,IND,@,CHA,W (+3),0,21:27,3,6,.500,2,4,.500,0,0,,0,3,3,2,0,1,0,4,8,6.4,-9
+3,3,2010-10-30,20-181,IND,,PHI,W (+13),0,20:18,3,6,.500,2,4,.500,0,0,,1,3,4,2,0,0,2,1,8,5.6,-9
+4,4,2010-11-03,20-185,IND,@,PHI,L (-26),0,14:42,1,4,.250,0,2,.000,0,0,,0,2,2,1,1,0,1,1,2,0.5,-16
+5,5,2010-11-05,20-187,IND,,MIL,L (-4),0,14:15,4,9,.444,2,5,.400,0,0,,0,3,3,0,0,0,0,1,10,5.8,-4
+6,6,2010-11-09,20-191,IND,,DEN,W (+31),0,12:59,1,4,.250,1,4,.250,1,2,.500,0,2,2,3,1,0,0,0,4,4.9,+1
+7,,2010-11-12,20-194,IND,,HOU,L (-3),Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play
+8,,2010-11-13,20-195,IND,@,CLE,W (+14),Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play
+9,,2010-11-16,20-198,IND,,ATL,L (-10),Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play
+10,7,2010-11-18,20-200,IND,,LAC,W (+27),0,16:19,1,4,.250,0,1,.000,1,1,1.000,1,1,2,3,0,0,1,4,3,1.1,+3
+11,,2010-11-20,20-202,IND,,ORL,L (-4),Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play
+12,,2010-11-22,20-204,IND,@,MIA,W (+16),Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play
+13,8,2010-11-23,20-205,IND,,CLE,W (+11),0,9:11,0,3,.000,0,2,.000,0,0,,0,1,1,0,0,0,0,0,0,-1.8,-15
+14,,2010-11-26,20-208,IND,,OKC,L (-4),Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play
+15,,2010-11-28,20-210,IND,@,LAL,W (+3),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+16,,2010-11-30,20-212,IND,@,SAC,W (+9),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+17,,2010-12-01,20-213,IND,@,UTA,L (-22),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+18,,2010-12-03,20-215,IND,@,PHO,L (-8),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+19,,2010-12-06,20-218,IND,,TOR,W (+24),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+20,,2010-12-08,20-220,IND,@,MIL,L (-2),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+21,,2010-12-10,20-222,IND,,CHA,W (+8),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+22,,2010-12-11,20-223,IND,@,ATL,L (-14),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+23,,2010-12-13,20-225,IND,@,CHI,L (-19),Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play,Did Not Play
+24,,2010-12-15,20-227,IND,,LAL,L (-15),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+25,,2010-12-17,20-229,IND,,CLE,W (+9),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+26,,2010-12-19,20-231,IND,@,BOS,L (-11),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+27,,2010-12-20,20-232,IND,,NOH,W (+1),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+28,,2010-12-26,20-238,IND,,MEM,L (-14),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+29,,2010-12-28,20-240,IND,,BOS,L (-12),Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive,Inactive
+30,9,2010-12-29,20-241,IND,@,WAS,L (-14),0,2:23,0,0,,0,0,,0,0,,0,0,0,0,1,0,1,1,0,-0.4,-1
+31,10,2010-12-31,20-243,IND,,WAS,W (+9),0,18:15,5,8,.625,0,1,.000,3,3,1.000,1,6,7,1,5,0,1,3,13,15.4,+7
+32,11,2011-01-02,20-245,IND,@,NYK,L (-6),0,9:24,2,4,.500,1,2,.500,0,0,,2,1,3,0,0,2,0,5,5,4.1,-6
+33,12,2011-01-07,20-250,IND,,SAS,L (-3),0,9:59,0,2,.000,0,1,.000,0,0,,0,1,1,0,0,0,0,2,0,-1.9,-8
+34,13,2011-01-08,20-251,IND,@,ATL,L (-15),0,21:15,5,10,.500,0,3,.000,0,0,,1,5,6,0,2,0,0,2,10,8.4,+4
+35,14,2011-01-11,20-254,IND,@,PHI,W (+8),0,3:40,1,1,1.000,0,0,,0,0,,0,1,1,0,1,0,0,0,2,3.0,+2
+36,15,2011-01-12,20-255,IND,,DAL,W (+13),0,17:48,6,9,.667,4,6,.667,0,0,,0,4,4,0,2,0,0,4,16,13.7,+9
+37,16,2011-01-14,20-257,IND,,CHI,L (-13),0,25:29,3,7,.429,1,1,1.000,1,2,.500,0,3,3,0,0,1,0,2,8,4.7,-1
+38,17,2011-01-17,20-260,IND,@,LAC,L (-7),0,11:14,3,5,.600,0,1,.000,0,0,,0,1,1,0,1,1,0,2,6,4.9,-1
+39,18,2011-01-19,20-262,IND,@,GSW,L (-2),0,11:52,2,4,.500,0,1,.000,4,4,1.000,1,4,5,1,1,0,1,4,8,7.0,+14
+40,19,2011-01-22,20-265,IND,@,POR,L (-5),0,7:24,3,5,.600,1,3,.333,0,0,,1,2,3,0,0,0,0,1,7,5.6,0
+41,20,2011-01-23,20-266,IND,@,DEN,L (-14),0,26:31,7,10,.700,2,3,.667,1,2,.500,0,0,0,0,2,1,0,4,17,13.5,-2
+42,21,2011-01-26,20-269,IND,,ORL,L (-15),0,32:32,3,9,.333,0,4,.000,4,4,1.000,0,7,7,2,2,0,2,4,10,6.8,-4
+43,22,2011-01-28,20-271,IND,,NJN,W (+32),0,24:02,6,7,.857,1,2,.500,2,4,.500,1,2,3,3,1,1,2,1,15,14.4,+2
+44,23,2011-01-29,20-272,IND,@,CHI,L (-21),0,26:07,3,10,.300,0,3,.000,2,4,.500,0,3,3,0,0,0,1,1,8,0.9,-24
+45,24,2011-01-31,20-274,IND,,TOR,W (+11),0,24:34,4,8,.500,1,3,.333,7,8,.875,1,3,4,1,1,2,2,0,16,14.3,+16
+46,25,2011-02-02,20-276,IND,@,CLE,W (+5),0,20:39,4,6,.667,3,4,.750,2,2,1.000,0,2,2,2,1,0,1,2,13,11.6,+2
+47,26,2011-02-04,20-278,IND,,POR,W (+13),0,23:36,1,6,.167,0,3,.000,4,6,.667,0,4,4,0,0,0,1,1,6,1.2,-7
+48,27,2011-02-06,20-280,IND,@,NJN,W (+19),0,27:36,5,12,.417,0,2,.000,4,5,.800,3,3,6,1,2,0,1,1,14,11.5,+17
+49,28,2011-02-08,20-282,IND,@,MIA,L (-5),0,22:17,3,10,.300,0,4,.000,2,2,1.000,1,2,3,0,1,0,1,0,8,3.5,-14
+50,29,2011-02-09,20-283,IND,,CHA,W (+1),0,16:49,3,7,.429,0,2,.000,1,1,1.000,2,1,3,2,0,0,1,4,7,3.8,+3
+51,30,2011-02-11,20-285,IND,,MIN,W (+11),0,28:27,5,10,.500,1,3,.333,0,0,,1,3,4,4,1,1,0,0,11,12.1,0
+52,31,2011-02-12,20-286,IND,@,MIL,W (+6),0,24:19,3,6,.500,1,3,.333,4,8,.500,0,7,7,0,0,0,1,3,11,6.3,+2
+53,32,2011-02-15,20-289,IND,,MIA,L (-7),0,31:27,4,7,.571,3,4,.750,3,3,1.000,0,5,5,2,1,0,1,3,14,12.4,-2
+54,33,2011-02-16,20-290,IND,@,DET,L (-6),0,12:14,0,3,.000,0,1,.000,0,0,,0,1,1,0,0,0,1,1,0,-3.2,-3
+55,34,2011-02-22,20-296,IND,@,WAS,W (+17),0,25:18,5,11,.455,0,3,.000,1,1,1.000,2,7,9,2,1,2,3,4,11,8.0,+3
+56,35,2011-02-23,20-297,IND,,DET,W (+1),0,21:54,5,11,.455,0,2,.000,0,0,,0,5,5,1,2,0,3,1,10,5.1,+3
+57,36,2011-02-25,20-299,IND,,UTA,L (-11),0,20:45,0,4,.000,0,1,.000,4,4,1.000,0,5,5,0,1,0,0,2,4,2.9,-4
+58,37,2011-02-27,20-301,IND,,PHO,L (-2),0,20:28,3,7,.429,1,4,.250,0,0,,1,2,3,3,0,0,1,2,7,4.9,+3
+59,38,2011-03-01,20-303,IND,,GSW,W (+9),0,16:52,6,12,.500,0,2,.000,0,0,,1,3,4,0,1,0,0,1,12,8.2,+11
+60,39,2011-03-02,20-304,IND,@,OKC,L (-24),0,28:06,3,6,.500,0,2,.000,2,3,.667,0,3,3,3,2,1,2,2,8,7.5,-10
+61,40,2011-03-04,20-306,IND,@,DAL,L (-8),0,21:51,3,5,.600,1,1,1.000,1,1,1.000,0,1,1,0,1,0,2,1,8,4.6,+1
+62,41,2011-03-05,20-307,IND,@,HOU,L (-17),0,26:22,3,4,.750,0,0,,2,2,1.000,1,5,6,2,2,1,4,1,8,8.3,-4
+63,42,2011-03-08,20-310,IND,,PHI,L (-10),0,25:49,2,4,.500,0,0,,2,3,.667,1,9,10,0,2,1,4,1,6,5.3,+2
+64,43,2011-03-09,20-311,IND,@,MIN,L (-26),1,24:23,2,8,.250,0,2,.000,4,6,.667,1,3,4,0,3,1,1,4,8,5.1,-8
+65,44,2011-03-11,20-313,IND,@,TOR,L (-10),1,31:29,4,10,.400,1,3,.333,1,1,1.000,3,4,7,1,1,0,3,2,10,5.8,-7
+66,45,2011-03-13,20-315,IND,@,NYK,W (+13),1,12:44,3,4,.750,0,0,,0,0,,0,1,1,1,1,0,1,4,6,3.8,+7
+67,46,2011-03-15,20-317,IND,,NYK,W (+2),1,27:31,2,5,.400,0,1,.000,1,2,.500,0,4,4,3,3,0,2,3,5,5.0,+18
+68,47,2011-03-16,20-318,IND,@,BOS,L (-12),1,33:03,6,13,.462,3,5,.600,0,0,,1,6,7,1,3,1,3,3,15,11.0,+1
+69,48,2011-03-18,20-320,IND,,CHI,W (+7),1,27:00,2,6,.333,0,1,.000,2,2,1.000,0,7,7,2,2,0,1,2,6,6.3,+16
+70,49,2011-03-19,20-321,IND,@,MEM,L (-21),1,35:59,2,8,.250,0,5,.000,2,3,.667,0,5,5,2,0,4,2,0,6,4.5,-25
+71,50,2011-03-21,20-323,IND,@,NJN,W (+4),1,19:14,1,2,.500,0,0,,0,0,,0,2,2,1,1,1,0,2,2,3.2,+9
+72,51,2011-03-23,20-325,IND,@,CHA,W (+23),1,23:12,3,5,.600,0,1,.000,2,2,1.000,0,3,3,1,1,0,2,5,8,4.3,+3
+73,52,2011-03-25,20-327,IND,,SAC,L (-17),1,24:37,5,9,.556,1,3,.333,1,4,.250,4,4,8,1,0,1,1,1,12,10.5,+1
+74,53,2011-03-26,20-328,IND,@,DET,L (-12),1,12:16,2,2,1.000,1,1,1.000,0,0,,0,1,1,1,2,0,2,4,5,3.8,+2
+75,54,2011-03-28,20-330,IND,,BOS,W (+7),1,14:27,0,3,.000,0,1,.000,0,0,,1,1,2,1,0,0,2,4,0,-4.0,-12
+76,55,2011-03-30,20-332,IND,,DET,W (+10),1,25:41,2,7,.286,0,3,.000,4,4,1.000,0,3,3,2,1,0,0,1,8,6.8,+8
+77,56,2011-04-01,20-334,IND,,MIL,W (+1),1,23:29,3,7,.429,0,1,.000,0,0,,2,3,5,0,0,1,1,3,6,3.1,+5
+78,57,2011-04-03,20-336,IND,@,NOH,L (-12),1,23:46,1,5,.200,1,2,.500,0,0,,0,1,1,1,1,0,0,0,3,1.9,-18
+79,58,2011-04-06,20-339,IND,,WAS,W (+24),1,25:44,9,15,.600,5,6,.833,0,0,,1,5,6,4,2,1,1,2,23,22.0,+27
+80,59,2011-04-08,20-341,IND,,ATL,W (+12),1,19:24,3,6,.500,1,2,.500,0,0,,0,1,1,0,0,0,1,3,7,2.1,+3
+81,60,2011-04-10,20-343,IND,,NYK,L (-1),1,18:52,3,4,.750,0,0,,0,0,,0,3,3,0,0,0,0,4,6,3.7,+9
+82,61,2011-04-13,20-346,IND,@,ORL,L (-18),1,22:45,1,5,.200,0,1,.000,0,0,,0,2,2,0,0,0,3,1,2,-3.9,-7
