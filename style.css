@@ -23,6 +23,11 @@ body {
 
 .light {
   font-weight: 400;
+  /* color: red; */
+}
+
+.accumulatedTotalText {
+  /* color: purple; */
 }
 
 .tooltip {

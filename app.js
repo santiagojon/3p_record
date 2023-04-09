@@ -33,7 +33,7 @@ async function draw(datasets) {
   await Promise.all(
     datasets.map(async (dataset) => {
       const data = await dataset.data;
-      const baseColor = dataset.isActive ? "#6e5fd9" : "#e4e4e4";
+      const baseColor = dataset.isActive ? "#6e5fd9" : "#cdcdcd";
       const initialColor = dataset.featured
         ? d3.hsl(baseColor).darker(0.3)
         : baseColor;
@@ -63,16 +63,6 @@ async function draw(datasets) {
 
   dimensions.ctrWidth = dimensions.width - dimensions.margins * 3; //modified to prevent text cutoff on right side of graph
   dimensions.ctrHeight = dimensions.height - dimensions.margins * 4;
-
-  // Adds dashes lines for each value on the y-axis
-  function make_y_gridlines(yScale) {
-    return d3
-      .axisLeft(yScale)
-      .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500])
-      .tickSize(-dimensions.ctrWidth)
-      .tickFormat("")
-      .tickSizeOuter(0);
-  }
 
   const paddingPercentage = 0.1;
   const paddedWidth = dimensions.width * (1 + paddingPercentage);
@@ -126,6 +116,33 @@ async function draw(datasets) {
     .x((d) => xScale(parseDate(d.Date)))
     .y((d) => yScale(d.TPM_running_total));
 
+  // Adds dashed lines for each value on the y-axis
+  function make_y_gridlines(yScale) {
+    return (
+      d3
+        .axisLeft(yScale)
+        .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500])
+        .tickSize(-dimensions.ctrWidth)
+        // .tickFormat("")
+        .tickFormat((d) => "")
+      //.tickSizeOuter(0)
+    );
+  }
+
+  // Draw custom y-axis labels
+  const yAxisLabels = [500, 1000, 1500, 2000, 2500, 3000, 3500];
+  yAxisLabels.forEach((label) => {
+    ctr
+      .append("text")
+      .attr("class", "y-axis-label")
+      .attr("x", 0)
+      .attr("y", yScale(label) - 5)
+      //.text(label)
+      .text(label.toLocaleString()) // add commas for values over 1,000
+      .style("font-size", "12px") // decrease font size
+      .attr("text-anchor", "start");
+  });
+
   /////////////////////////////////////////Loop/////////////////////////////////////////
   // This loop iterates over each dataset in the input array and creates a line and text element for each one
   // It takes an array of datasets as input and uses the index of each dataset to access the corresponding dataWithRunningTotal object
@@ -167,10 +184,14 @@ async function draw(datasets) {
         }
         return baseColor;
       })
-      .attr(
-        "stroke-width",
-        dataWithRunningTotal[datasetIndex][0].featured ? 2 : 0.5
-      ) // Set stroke width based on featured property's value
+      .attr("stroke-width", (d, i) => {
+        return dataWithRunningTotal[datasetIndex][0].featured
+          ? dataWithRunningTotal[datasetIndex][0].playerName === "Steph Curry"
+            ? 2.5
+            : 1.5
+          : 0.5;
+      })
+      // Set stroke width based on featured property's value
       //.attr("clip-path", `url(#${clipPathId})`) // Apply the clipping area
 
       /////////////////////////////////////////Mouse Events/////////////////////////////////////////
@@ -195,15 +216,28 @@ async function draw(datasets) {
           xCoord - parseDate(d0.Date) > parseDate(d1.Date) - xCoord ? d1 : d0;
 
         // Update the player's name text element if featured is set to false
-        if (!firstPoint.featured) {
-          d3.select(`#player-name-${datasetIndex}`).text(
-            `${currentData.playerName}`
-          );
+        if (
+          firstPoint.playerName !== "Steph Curry" ||
+          firstPoint.playerName !== "Ray Allen"
+        ) {
+          // Show's player's name on hover
+          d3.select(`#player-name-${datasetIndex}`)
+            .text(`${currentData.playerName}`)
+            .style("fill", "#2d2d2d");
 
-          // d3,
-          //   select(".totalAccumulationText").text(
-          //     `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
-          //   );
+          // Show's player's running total and most recent active year on hover
+          d3.select(`#player-name-${datasetIndex}`)
+            .append("tspan")
+            .attr("x", xScale(parseDate(lastPoint.Date)))
+            .attr("dx", "0.5em")
+            .attr("dy", "1.2em")
+            .text(
+              `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
+            )
+            .attr("class", "light")
+            .attr("class", "accumulatedTotalText")
+            .style("stroke-width", "2px")
+            .style("fill", "#2d2d2d");
 
           endPointCircle = ctr
             .append("circle")
@@ -212,8 +246,6 @@ async function draw(datasets) {
             .attr("r", 4)
             .attr("fill", "black");
         }
-
-        // Show tspan on hover
 
         // Create a tooltip element and set its position and content
         const tooltip = d3
@@ -255,6 +287,15 @@ async function draw(datasets) {
 
         if (!firstPoint.featured) {
           d3.select(`#player-name-${datasetIndex}`).text("");
+        }
+
+        if (
+          firstPoint.playerName !== "Steph Curry" ||
+          firstPoint.playerName !== "Ray Allen"
+        ) {
+          d3.select(`#player-name-${datasetIndex} .accumulatedTotalText`).text(
+            ""
+          );
 
           endPointCircle.remove();
         }
@@ -287,16 +328,6 @@ async function draw(datasets) {
 
     // Apply the clip path to the parent <g> element
     const playerNameText = ctr
-      // .append("g")
-      // .attr("clip-path", "url(#text-clip-path)")
-      // .attr("id", `player-name-${datasetIndex}`)
-      // .attr(
-      //   "transform",
-      //   `translate(${xScale(parseDate(lastPoint.Date))}, ${yScale(
-      //     lastPoint.TPM_running_total
-      //   )})`
-      // )
-
       .append("text")
       .attr("clip-path", "url(#text-clip-path)")
       .attr("id", `player-name-${datasetIndex}`)
@@ -315,19 +346,28 @@ async function draw(datasets) {
         }
       })
       .style("stroke-width", "2px") // set the stroke width to 2 pixels
-      .style("fill", "black") // set the text color to black
-      .append("tspan")
-      .attr("x", xScale(parseDate(lastPoint.Date)))
-      .attr("dx", "0.5em")
-      .attr("dy", "1.2em")
-      .text(
-        `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
-      )
-      .attr("class", "light")
-      .attr("class", "accumulatedTotalText")
-      .style("stroke-width", "2px") // set the stroke width to 2 pixels
-      .style("fill", "black") // set the text color to black
+      .style("fill", "black"); // set the text color to black
 
+    // Automatically sets the player names, running totals, and most recent active year for top two leaders
+    if (
+      firstPoint.playerName === "Steph Curry" ||
+      firstPoint.playerName === "Ray Allen"
+    ) {
+      playerNameText
+        .append("tspan")
+        .attr("x", xScale(parseDate(lastPoint.Date)))
+        .attr("dx", "0.5em")
+        .attr("dy", "1.2em")
+        .text(
+          `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
+        )
+        .attr("class", "light")
+        .attr("class", "accumulatedTotalText")
+        .style("stroke-width", "2px")
+        .style("fill", "black");
+    }
+
+    playerNameText
       .append("rect")
       // .attr("x", -padding / 2)
       .attr("y", -10)
@@ -381,28 +421,28 @@ async function draw(datasets) {
     .attr("stroke-width", 1);
 
   // Axes - Setup
-  const yAxis = d3
-    .axisLeft(yScale)
-    .tickSizeOuter(0)
-    .tickSizeInner(-dimensions.ctrWidth)
-    .tickPadding(15)
-    .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500]);
-
-  const xAxis = d3.axisBottom(xScale);
+  // const yAxis = d3
+  //   .axisLeft(yScale)
+  //   .tickSizeOuter(0)
+  //   .tickSizeInner(-dimensions.ctrWidth)
+  //   .tickPadding(15)
+  //   .tickValues([500, 1000, 1500, 2000, 2500, 3000, 3500]);
 
   // Draws the y-axis and uses transform to make visisble
-  ctr
-    .append("g")
-    .attr("class", "axis y-axis")
-    .attr("id", "y-axis")
-    .call(yAxis)
-    .selectAll(".tick line")
-    .attr("stroke-dasharray", "4,4")
-    .attr("stroke-opacity", 0.2)
-    .attr("stroke-width", 0)
-    .attr("transform", `translate(${dimensions.ctrWidth}, 0)`);
+  // ctr
+  //   .append("g")
+  //   .attr("class", "axis y-axis")
+  //   .attr("id", "y-axis")
+  //   .call(yAxis)
+  //   .selectAll(".tick line")
+  //   .attr("stroke-dasharray", "4,4")
+  //   .attr("stroke-opacity", 0.2)
+  //   .attr("stroke-width", 0)
+  //   .attr("transform", `translate(${dimensions.ctrWidth}, 0)`);
 
   // Draws the x-axis and uses transform to make visisble
+  const xAxis = d3.axisBottom(xScale);
+
   ctr
     .append("g")
     .attr("class", "axis")
@@ -459,6 +499,16 @@ const dataset = [
 draw(dataset);
 
 //////////////////////////////////
+
+// 4-9-23:
+// 4. Fix tooltip and add clip path?
+
+// If there's time:
+// 5. Add legend for active color and vertical dashed line
+// 6. Add Voronoi Diagram?
+
+//Next:
+//Update all active players with 2022/2023 season data
 
 // Where I left off.
 
