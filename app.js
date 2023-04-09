@@ -26,6 +26,9 @@ import {
   tatum,
 } from "./players.js";
 
+import { Delaunay } from "https://cdn.skypack.dev/d3-delaunay";
+// import { voronoi } from "d3-voronoi";
+
 async function draw(datasets) {
   const parseDate = d3.timeParse("%Y-%m-%d");
   const dataWithRunningTotal = [];
@@ -98,17 +101,6 @@ async function draw(datasets) {
       new Date(2023, 0, 5), // set your desired end date
     ])
     .range([0, paddedWidth - dimensions.margins * 3]);
-
-  // Creates clip path to be added to lines in loop
-  // const clipPathId = "clip-path";
-  // svg
-  //   .append("clipPath")
-  //   .attr("id", clipPathId)
-  //   .append("rect")
-  //   .attr("x", 0)
-  //   .attr("y", 0)
-  //   .attr("width", dimensions.ctrWidth)
-  //   .attr("height", dimensions.ctrHeight);
 
   //Creates player lines
   const lineGenerator = d3
@@ -322,6 +314,7 @@ async function draw(datasets) {
         // Make clip path text background disappear on mouseLeave
         d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 0);
       });
+
     /////////////////////////////////////////Mouse Events - End/////////////////////////////////////////
 
     /////////////////////////////////////////Draw/////////////////////////////////////////
@@ -369,7 +362,7 @@ async function draw(datasets) {
         }
       })
       .style("stroke-width", "2px") // set the stroke width to 2 pixels
-      .style("fill", "black"); // set the text color to black
+      .style("fill", "black"); // set the player name color to black
 
     // Automatically sets the player names, running totals, and most recent active year for top two leaders
     if (
@@ -386,8 +379,8 @@ async function draw(datasets) {
         )
         .attr("class", "light")
         .attr("class", "accumulatedTotalText")
-        .style("stroke-width", "2px")
-        .style("fill", "black");
+        // .style("stroke-width", "2px")
+        .style("fill", "#2d2d2d");
     }
 
     // Draw a horizontal line for the current record holder - Steph Curry
@@ -416,6 +409,160 @@ async function draw(datasets) {
         .attr("fill", firstPoint.initialColor);
     }
   });
+
+  /////////////////////////////////////////Voronoi Diagram/////////////////////////////////////////
+
+  //THIS NEEDS TO BE REFACTORED TO SWITCH dataWithRunningTotal TO d FOR THE MOUSE EVENTS
+
+  // // Flatten the dataWithRunningTotal array and remove null or undefined values
+  // const flatData = dataWithRunningTotal.flat().filter((d) => d);
+
+  // // Define the Voronoi diagram
+  // const delaunay = Delaunay.from(
+  //   flatData,
+  //   (d) => xScale(parseDate(d.Date)),
+  //   (d) => yScale(d.TPM_running_total)
+  // );
+  // const voronoiDiagram = delaunay.voronoi([
+  //   0,
+  //   0,
+  //   dimensions.ctrWidth,
+  //   dimensions.ctrHeight,
+  // ]);
+
+  // // Add a group element to contain the Voronoi cells
+  // const voronoiGroup = ctr.append("g").attr("class", "voronoi");
+
+  // // Create the Voronoi cells
+  // voronoiGroup
+  //   .selectAll("path")
+  //   .data(flatData)
+  //   .join("path")
+  //   .attr("d", (d, i) => voronoiDiagram.renderCell(i))
+  //   .attr("stroke", "none")
+  //   .attr("fill", "none")
+  //   .attr("pointer-events", "all")
+  //   .on("mouseover", function (event, d) {
+  //     // Get the x coordinate of the mouse cursor
+  //     const xCoord = xScale.invert(d3.pointer(event)[0]);
+  //     // Use bisectDate to find the index of the closest data point to the mouse cursor
+  //     const bisectDate = d3.bisector((d) => parseDate(d.Date)).left;
+  //     const i = bisectDate(
+  //       dataWithRunningTotal[datasetIndex],
+  //       xCoord,
+  //       1,
+  //       dataWithRunningTotal[datasetIndex].length - 1
+  //     );
+  //     // Get the data points before and after the closest data point
+  //     const d0 = dataWithRunningTotal[datasetIndex][i - 1];
+  //     const d1 = dataWithRunningTotal[datasetIndex][i];
+  //     // Determine which data point is closer to the mouse cursor
+  //     const currentData =
+  //       xCoord - parseDate(d0.Date) > parseDate(d1.Date) - xCoord ? d1 : d0;
+
+  //     // Update the player's name text element if featured is set to false
+  //     if (
+  //       firstPoint.playerName !== "Steph Curry" ||
+  //       firstPoint.playerName !== "Ray Allen"
+  //     ) {
+  //       // Show's player's name on hover
+  //       d3.select(`#player-name-${datasetIndex}`)
+  //         .text(`${currentData.playerName}`)
+  //         .style("fill", "#2d2d2d");
+
+  //       // Show's player's running total and most recent active year on hover
+  //       d3.select(`#player-name-${datasetIndex}`)
+  //         .append("tspan")
+  //         .attr("x", xScale(parseDate(lastPoint.Date)))
+  //         .attr("dx", "0.5em")
+  //         .attr("dy", "1.2em")
+  //         .text(
+  //           `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
+  //         )
+  //         .attr("class", "light")
+  //         .attr("class", "accumulatedTotalText")
+  //         .style("stroke-width", "2px")
+  //         .style("fill", "#2d2d2d");
+
+  //       endPointCircle = ctr
+  //         .append("circle")
+  //         .attr("cx", xScale(parseDate(lastPoint.Date)))
+  //         .attr("cy", yScale(lastPoint.TPM_running_total))
+  //         .attr("r", 4)
+  //         .attr("fill", "black");
+  //     }
+
+  //     // Create a tooltip element and set its position and content
+  //     const tooltip = d3
+  //       .select("#chart")
+  //       .append("div")
+  //       .attr("class", "tooltip")
+  //       .style("opacity", 0);
+
+  //     tooltip
+  //       .html(
+  //         `<div>Date: ${currentData.Date}</div><div>Total 3-Pointers Made: ${currentData.TPM_running_total}</div>`
+  //         // Add more? Instead of a quick blurb, add more info? (TPA, %, Opponent)?
+  //       )
+  //       .style("left", `${event.pageX + 10}px`)
+  //       .style("top", `${event.pageY + 10}px`)
+  //       .style("opacity", 1);
+
+  //     // Highlight the line element on mouseover
+  //     d3.select(this).attr("stroke-width", 2);
+  //     d3.select(this).attr("stroke", "black");
+
+  //     // Make clip path visible on mouseOver
+  //     d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 1);
+  //   })
+
+  //   .on("mousemove", function (event) {
+  //     // Update the position of the tooltip on mousemove
+  //     d3.select(".tooltip")
+  //       .style("left", `${event.pageX + 10}px`)
+  //       .style("top", `${event.pageY + 10}px`);
+  //   })
+  //   /////////////////////////////////////////Mouse Leave
+  //   .on("mouseleave", function (event, d) {
+  //     // Remove the tooltip on mouseleave and unhighlight the line element
+  //     d3.select(".tooltip").remove();
+
+  //     // Change the stroke width back to the original on mouseLeave
+  //     if (!firstPoint.featured) {
+  //       d3.select(`#player-name-${datasetIndex}`).text("");
+  //       d3.select(this).attr("stroke-width", 0.5);
+  //     } else if (
+  //       firstPoint.playerName !== "Steph Curry" &&
+  //       firstPoint.featured
+  //     ) {
+  //       d3.select(this).attr("stroke-width", 1.2);
+  //     } else if (firstPoint.playerName === "Steph Curry") {
+  //       d3.select(this).attr("stroke-width", 2.5);
+  //     }
+
+  //     // Remove clip path text on mouseLeave
+  //     if (
+  //       firstPoint.playerName !== "Steph Curry" ||
+  //       firstPoint.playerName !== "Ray Allen"
+  //     ) {
+  //       d3.select(`#player-name-${datasetIndex} .accumulatedTotalText`).text(
+  //         ""
+  //       );
+
+  //       endPointCircle.remove();
+  //     }
+
+  //     // Change line color back to original color on mouseLeave
+  //     d3.select(this).attr(
+  //       "stroke",
+  //       dataWithRunningTotal[datasetIndex][0].initialColor
+  //     );
+
+  //     // Make clip path text background disappear on mouseLeave
+  //     d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 0);
+  //   });
+
+  /////////////////////////////////////////Voronoi Diagram - End/////////////////////////////////////////
 
   // Draw a vertical line for the year when 3 pointers overtook midrange shots
   ctr
@@ -510,7 +657,9 @@ draw(dataset);
 //////////////////////////////////
 
 // 4-9-23:
-// 4. Fix tooltip and add clip path?
+// 4. Fix the bold text for the Steph Curry and Ray Allen clip path text
+//    (you'll see the alternative playerNameText commented out above. This fixed the bold issue but caused a new one where the name shifts left)
+//    That text is also disappearing on mouseOver
 
 // If there's time:
 // 5. Add legend for active color and vertical dashed line
