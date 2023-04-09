@@ -136,10 +136,16 @@ async function draw(datasets) {
       .append("text")
       .attr("class", "y-axis-label")
       .attr("x", 0)
-      .attr("y", yScale(label) - 5)
+      .attr("y", yScale(label) - 7)
       //.text(label)
-      .text(label.toLocaleString()) // add commas for values over 1,000
-      .style("font-size", "12px") // decrease font size
+      .text(() => {
+        const formattedLabel = label.toLocaleString(); // add commas for values over 1,000
+        return label === 3500
+          ? `${formattedLabel} career 3-pointers`
+          : formattedLabel;
+      })
+      .style("font-size", "14px") // decrease font size
+      .style("fill", "#2d2d2d")
       .attr("text-anchor", "start");
   });
 
@@ -188,7 +194,7 @@ async function draw(datasets) {
         return dataWithRunningTotal[datasetIndex][0].featured
           ? dataWithRunningTotal[datasetIndex][0].playerName === "Steph Curry"
             ? 2.5
-            : 1.5
+            : 1.2
           : 0.5;
       })
       // Set stroke width based on featured property's value
@@ -266,6 +272,9 @@ async function draw(datasets) {
         // Highlight the line element on mouseover
         d3.select(this).attr("stroke-width", 2);
         d3.select(this).attr("stroke", "black");
+
+        // Make clip path visible on mouseOver
+        d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 1);
       })
       /////////////////////////////////////////Mouse Move
       .on("mousemove", function (event) {
@@ -279,16 +288,20 @@ async function draw(datasets) {
         // Remove the tooltip on mouseleave and unhighlight the line element
         d3.select(".tooltip").remove();
 
-        const originalStrokeWidth = dataWithRunningTotal[datasetIndex][0]
-          .featured
-          ? 2
-          : 0.5;
-        d3.select(this).attr("stroke-width", originalStrokeWidth);
-
+        // Change the stroke width back to the original on mouseLeave
         if (!firstPoint.featured) {
           d3.select(`#player-name-${datasetIndex}`).text("");
+          d3.select(this).attr("stroke-width", 0.5);
+        } else if (
+          firstPoint.playerName !== "Steph Curry" &&
+          firstPoint.featured
+        ) {
+          d3.select(this).attr("stroke-width", 1.2);
+        } else if (firstPoint.playerName === "Steph Curry") {
+          d3.select(this).attr("stroke-width", 2.5);
         }
 
+        // Remove clip path text on mouseLeave
         if (
           firstPoint.playerName !== "Steph Curry" ||
           firstPoint.playerName !== "Ray Allen"
@@ -300,24 +313,18 @@ async function draw(datasets) {
           endPointCircle.remove();
         }
 
+        // Change line color back to original color on mouseLeave
         d3.select(this).attr(
           "stroke",
           dataWithRunningTotal[datasetIndex][0].initialColor
         );
+
+        // Make clip path text background disappear on mouseLeave
+        d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 0);
       });
     /////////////////////////////////////////Mouse Events - End/////////////////////////////////////////
 
     /////////////////////////////////////////Draw/////////////////////////////////////////
-
-    // Add a clip path to the text element to prevent it from overlapping with the lines
-    // const defs = svg.append("defs");
-    // const clipPath = defs.append("clipPath").attr("id", "text-clip-path");
-    // clipPath
-    //   .append("rect")
-    //   .attr("x", 0)
-    //   .attr("y", 0)
-    //   .attr("width", dimensions.ctrWidth + 10)
-    //   .attr("height", dimensions.ctrHeight);
 
     // Draw a text element for a player's name to be added the top of the line
     const firstPoint = dataWithRunningTotal[datasetIndex][0];
@@ -325,6 +332,22 @@ async function draw(datasets) {
       dataWithRunningTotal[datasetIndex][
         dataWithRunningTotal[datasetIndex].length - 1
       ];
+
+    const rectWidth = 120; // Set the width based on your desired padding and text length
+    const padding = 8;
+
+    // Creates background for clip path text
+    const playerNameTextBackground = ctr
+      .append("rect")
+      .attr("id", `player-name-background-${datasetIndex}`)
+      .attr("x", xScale(parseDate(lastPoint.Date)) + padding / 2)
+      .attr("y", yScale(lastPoint.TPM_running_total) - 15)
+      .attr("width", rectWidth)
+      .attr("height", 30)
+      .attr("rx", 5)
+      .attr("ry", 5)
+      .attr("fill", "#f7f7f7")
+      .attr("opacity", 0);
 
     // Apply the clip path to the parent <g> element
     const playerNameText = ctr
@@ -366,20 +389,6 @@ async function draw(datasets) {
         .style("stroke-width", "2px")
         .style("fill", "black");
     }
-
-    playerNameText
-      .append("rect")
-      // .attr("x", -padding / 2)
-      .attr("y", -10)
-      // .attr("width", rectWidth)
-      .attr("height", 30)
-      .attr("fill", "#f7f7f7")
-      .attr("rx", 5)
-      .attr("ry", 5)
-      // .attr("x", padding / 2)
-      .attr("y", 0)
-      .attr("text-anchor", "start")
-      .style("fill", "white");
 
     // Draw a horizontal line for the current record holder - Steph Curry
     if (firstPoint.playerName === "Steph Curry") {
