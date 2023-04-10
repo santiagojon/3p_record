@@ -74,7 +74,7 @@ export const james = {
   playerName: "Lebron James",
   data: d3.csv("data/lebronjames/james-career.csv"),
   isActive: true,
-  featured: true,
+  featured: false,
   mostRecentActiveYear: "2023",
 };
 
@@ -190,8 +190,8 @@ export const hield = {
 
 //50+
 export const tatum = {
-  playerName: "Jason Tatum",
-  data: d3.csv("data/jasontatum/tatum-career.csv"),
+  playerName: "Jayson Tatum",
+  data: d3.csv("data/jaysontatum/tatum-career.csv"),
   isActive: true,
   featured: true,
   mostRecentActiveYear: "2023",
