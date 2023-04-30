@@ -21,13 +21,39 @@ import {
   smith,
   gordon,
   //
-  nash,
+  durant,
+  billups,
+  bryant,
+  matthews,
+  lewis,
+  stojakovic,
+  anthony,
+  ellis,
   hield,
+  nash,
+  //
+  walker,
+  paul,
+  conley,
+  richardson,
+  ariza,
+  mikemiller,
+  batum,
+  mccollum,
+  green,
+  love,
+  //
+  rice,
+  jones,
+  hardaway,
+  vanexel,
+  //
+  mitchell,
   tatum,
 } from "./players.js";
 
 import { Delaunay } from "https://cdn.skypack.dev/d3-delaunay";
-// import { voronoi } from "d3-voronoi";
+// import { voronoi } from "https://d3js.org/d3-voronoi.v1.min.js";
 
 async function draw(datasets) {
   const parseDate = d3.timeParse("%Y-%m-%d");
@@ -61,7 +87,7 @@ async function draw(datasets) {
   const dimensions = {
     width: 1000,
     height: 700,
-    margins: 50,
+    margins: 70,
   };
 
   dimensions.ctrWidth = dimensions.width - dimensions.margins * 3; //modified to prevent text cutoff on right side of graph
@@ -97,8 +123,8 @@ async function draw(datasets) {
   const xScale = d3
     .scaleTime()
     .domain([
-      new Date(1987, 9, 11), // set your desired start date
-      new Date(2023, 0, 5), // set your desired end date
+      new Date(1983, 10, 0), // set your desired start date
+      new Date(2023, 5, 0), // set your desired end date
     ])
     .range([0, paddedWidth - dimensions.margins * 3]);
 
@@ -647,8 +673,34 @@ const dataset = [
   smith,
   gordon,
   //
-  nash,
+  durant,
+  billups,
+  bryant,
+  matthews,
+  lewis,
+  stojakovic,
+  anthony,
+  ellis,
   hield,
+  nash,
+  //
+  walker,
+  paul,
+  conley,
+  richardson,
+  ariza,
+  mikemiller,
+  batum,
+  mccollum,
+  green,
+  love,
+  //
+  rice,
+  jones,
+  hardaway,
+  vanexel,
+  //
+  mitchell,
   tatum,
 ];
 
