@@ -331,8 +331,8 @@ export const love = {
 
 ////////// 41-50
 export const irving = {
-  playerName: "Kyrue Irving",
-  data: "",
+  playerName: "Kyrie Irving",
+  data: d3.csv("data/kyrieirving/irving-career.csv"),
   isActive: true,
   featured: false,
   mostRecentActiveYear: "2023",
@@ -370,13 +370,13 @@ export const vanexel = {
   mostRecentActiveYear: "2006",
 };
 
-// export const bibby = {
-//   playerName: "Mike Bibby",
-//   data: d3.csv("data//-career.csv"),
-//   isActive: false,
-//   featured: false,
-//   mostRecentActiveYear: "",
-// };
+export const bibby = {
+  playerName: "Mike Bibby",
+  data: d3.csv("data/mikebibby/bibby-career.csv"),
+  isActive: false,
+  featured: false,
+  mostRecentActiveYear: "2012",
+};
 
 // export const beal = {
 //   playerName: "Bradley Beal",
