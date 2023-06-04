@@ -8,7 +8,7 @@ const thompsonData = d3.csv("data/klaythompson/thompson-career.csv");
 //1-10
 export const curry = {
   playerName: "Steph Curry",
-  data: curryData,
+  data: d3.csv("data/stephcurry/curry-career.csv"),
   isActive: true,
   featured: true,
   mostRecentActiveYear: "2023",
@@ -378,47 +378,123 @@ export const bibby = {
   mostRecentActiveYear: "2012",
 };
 
-// export const beal = {
-//   playerName: "Bradley Beal",
-//   data: d3.csv("data//-career.csv"),
-//   isActive: true,
-//   featured: false,
-//   mostRecentActiveYear: "2023",
-// };
+export const beal = {
+  playerName: "Bradley Beal",
+  data: d3.csv("data/bradleybeal/beal-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
-// export const mills = {
-//   playerName: "Patty Mills",
-//   data: d3.csv("data//-career.csv"),
-//   isActive: true,
-//   featured: false,
-//   mostRecentActiveYear: "2023",
-// };
+export const mills = {
+  playerName: "Patty Mills",
+  data: d3.csv("data/pattymills/mills-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
-// export const ginobli = {
-//   playerName: "Manu Ginobli",
-//   data: d3.csv("data//-career.csv"),
-//   isActive: false,
-//   featured: false,
-//   mostRecentActiveYear: "",
-// };
+//Make sure this value is correct. Seems off
+export const ginobili = {
+  playerName: "Manu Ginobli",
+  data: d3.csv("data/manuginobili/ginobili-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "",
+};
 
-// export const hardawayjr = {
-//   playerName: "Tim Hardaway Jr.",
-//   data: d3.csv("data//-career.csv"),
-//   isActive: true,
-//   featured: false,
-//   mostRecentActiveYear: "2023",
-// };
+export const hardawayjr = {
+  playerName: "Tim Hardaway Jr.",
+  data: d3.csv("data/timhardawayjr/hardawayjr-career.csv"),
+  isActive: true,
+  featured: false,
+  mostRecentActiveYear: "2023",
+};
 
-////////// 50+ (Selected)
-export const lavine = {
-  playerName: "Zach Lavine",
+////////// 51-60
+export const williams = {
+  playerName: "Lou Williams",
   // data: d3.csv("data/zachlavine/lavine-career.csv"),
   isActive: true,
   featured: true,
   mostRecentActiveYear: "2023",
 };
 
+export const frinley = {
+  playerName: "Michael Frinley",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const gallinari = {
+  playerName: "Danilo Gallinari",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const barry = {
+  playerName: "Brent Barry",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const walkerantoine = {
+  playerName: "Antoine Walker",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const bogdanovic = {
+  playerName: "Bojan Bogdonovic",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const majerle = {
+  playerName: "Dan Majerle",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const Davis = {
+  playerName: "Baron Davis",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const ross = {
+  playerName: "Terrence Ross",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+export const holiday = {
+  playerName: "Jrue Holiday",
+  // data: d3.csv("data/zachlavine/lavine-career.csv"),
+  isActive: false,
+  featured: true,
+  mostRecentActiveYear: "",
+};
+
+////////// 61-70
+
+////////// 100+ (Selected)
 export const mitchell = {
   playerName: "Donovan Mitchell",
   data: d3.csv("data/donovanmitchell/mitchell-career.csv"),

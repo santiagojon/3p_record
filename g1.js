@@ -49,6 +49,10 @@ import {
   hardaway,
   vanexel,
   bibby,
+  beal,
+  mills,
+  ginobili,
+  hardawayjr,
   //
   mitchell,
   tatum,
@@ -56,6 +60,42 @@ import {
 
 import { Delaunay } from "https://cdn.skypack.dev/d3-delaunay";
 // import { voronoi } from "https://d3js.org/d3-voronoi.v1.min.js";
+
+//Dimensions
+const dimensions = {
+  width: 1000,
+  height: 700,
+  margins: 70,
+};
+
+dimensions.ctrWidth = dimensions.width - dimensions.margins * 2; //modified to prevent text cutoff on right side of graph
+dimensions.ctrHeight = dimensions.height - dimensions.margins * 2;
+
+const paddingPercentage = 0.1;
+const paddedWidth = dimensions.width * (1 + paddingPercentage);
+
+const svg = d3
+  .select("#chart")
+  .append("svg")
+  .attr("width", paddedWidth) // Set the SVG width to the new paddedWidth
+  .attr("height", dimensions.ctrHeight + dimensions.margins * 2);
+
+// Create your graph's container
+// Create your graph's container
+const ctr = svg
+  .append("g")
+  .attr("class", "container")
+  .attr("transform", `translate(${dimensions.margins}, ${dimensions.margins})`)
+  .attr("width", dimensions.ctrWidth)
+  .attr("height", dimensions.ctrHeight - dimensions.margins * 2);
+
+const voronoiGroup = ctr
+  .append("g")
+  .attr("class", "voronoi")
+  .attr("width", "100%")
+  .attr("height", "100%");
+
+//////// Draw function
 
 async function draw(datasets) {
   const parseDate = d3.timeParse("%Y-%m-%d");
@@ -85,40 +125,13 @@ async function draw(datasets) {
     })
   );
 
-  //Dimensions
-  const dimensions = {
-    width: 1000,
-    height: 700,
-    margins: 70,
-  };
-
-  dimensions.ctrWidth = dimensions.width - dimensions.margins * 2; //modified to prevent text cutoff on right side of graph
-  dimensions.ctrHeight = dimensions.height - dimensions.margins * 2;
-
-  const paddingPercentage = 0.1;
-  const paddedWidth = dimensions.width * (1 + paddingPercentage);
-
-  const svg = d3
-    .select("#chart")
-    .append("svg")
-    // .attr("viewBox", `0 0 ${dimensions.width} ${dimensions.height}`)
-    // .attr("width", "100%")
-    // .attr("height", "100%");
-    .attr("width", paddedWidth) // Set the SVG width to the new paddedWidth
-    .attr("height", dimensions.height);
-
-  // Create your graph's container
-  const ctr = svg
-    .append("g")
-    .attr(
-      "transform",
-      `translate(${dimensions.margins}, ${dimensions.margins})`
-    );
-
   // Scales
+  const yMax = d3.max(
+    dataWithRunningTotal.flatMap((d) => d.map((p) => p.TPM_running_total))
+  );
   const yScale = d3
     .scaleLinear()
-    .domain([0, 3500])
+    .domain([0, yMax])
     .range([dimensions.ctrHeight, 0])
     .nice();
 
@@ -169,6 +182,10 @@ async function draw(datasets) {
       .attr("text-anchor", "start");
   });
 
+  //Voronoi Setup
+
+  const allVoronoiCells = [];
+
   /////////////////////////////////////////Loop/////////////////////////////////////////
   // This loop iterates over each dataset in the input array and creates a line and text element for each one
   // It takes an array of datasets as input and uses the index of each dataset to access the corresponding dataWithRunningTotal object
@@ -182,6 +199,43 @@ async function draw(datasets) {
 
     // Create a line element for the current dataset
     let endPointCircle = null; // the circle at the end of each line
+
+    // Compute the Delaunay triangulation for this dataset's points
+    const delaunay = Delaunay.from(
+      dataWithRunningTotal[datasetIndex],
+      (d) => xScale(parseDate(d.Date)),
+      (d) => yScale(d.TPM_running_total)
+    );
+
+    // Render the Voronoi cells
+    delaunay.render();
+
+    const voronoi = delaunay.voronoi();
+
+    // Get an array of all the Voronoi cells for this dataset
+    const voronoiCells = [...voronoi.cellPolygons()];
+    console.log("V-Cells", voronoiCells);
+
+    // Store the Voronoi cells in the allVoronoiCells array
+    allVoronoiCells.push(voronoiCells);
+    console.log("allVoronoiCells", allVoronoiCells);
+    console.log("voronoiCells", voronoiCells);
+    console.log("voronoiCellsObj", Object.values(voronoiCells));
+
+    console.log("CELLPATHS IDX", datasetIndex);
+    const cellPaths = voronoiGroup
+      .selectAll("path")
+      .data(voronoiCells)
+      .enter()
+      .append("path")
+      .attr("class", `voronoi-cell voronoi-cell-${datasetIndex}`)
+      .attr("d", (d) => `M${d.join("L")}Z`)
+      .style("fill", "none")
+      .style("pointer-events", "all")
+      .on("mouseover", handleMouseOver.bind(null, datasetIndex)) // Handle mouseover event
+      .on("mouseleave", handleMouseLeave.bind(null, datasetIndex)); // Handle mouseleave event
+
+    console.log("cellPaths", cellPaths);
 
     ctr
       .append("path")
@@ -216,114 +270,133 @@ async function draw(datasets) {
             ? 2.5
             : 1.2
           : 0.5;
-      })
-
-      /////////////////////////////////////////Mouse Events/////////////////////////////////////////
-
-      /////////////////////////////////////////Mouse Over
-      .on("mouseover", function (event, d) {
-        // Get the x coordinate of the mouse cursor
-        const xCoord = xScale.invert(d3.pointer(event)[0]);
-        // Use bisectDate to find the index of the closest data point to the mouse cursor
-        const bisectDate = d3.bisector((d) => parseDate(d.Date)).left;
-        const i = bisectDate(
-          dataWithRunningTotal[datasetIndex],
-          xCoord,
-          1,
-          dataWithRunningTotal[datasetIndex].length - 1
-        );
-        // Get the data points before and after the closest data point
-        const d0 = dataWithRunningTotal[datasetIndex][i - 1];
-        const d1 = dataWithRunningTotal[datasetIndex][i];
-        // Determine which data point is closer to the mouse cursor
-        const currentData =
-          xCoord - parseDate(d0.Date) > parseDate(d1.Date) - xCoord ? d1 : d0;
-
-        // Update the player's name text element if featured is set to false
-        if (
-          firstPoint.playerName !== "Steph Curry" ||
-          firstPoint.playerName !== "Ray Allen"
-        ) {
-          // Show's player's name on hover
-          d3.select(`#player-name-${datasetIndex}`)
-            .text(`${currentData.playerName}`)
-            .style("fill", "#2d2d2d");
-
-          // Show's player's running total and most recent active year on hover
-          d3.select(`#player-name-${datasetIndex}`)
-            .append("tspan")
-            .attr("x", xScale(parseDate(lastPoint.Date)))
-            .attr("dx", "0.5em")
-            .attr("dy", "1.2em")
-            .text(
-              `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
-            )
-            .attr("class", "light")
-            .attr("class", "accumulatedTotalText")
-            .style("stroke-width", "2px")
-            .style("fill", "#2d2d2d");
-
-          endPointCircle = ctr
-            .append("circle")
-            .attr("cx", xScale(parseDate(lastPoint.Date)))
-            .attr("cy", yScale(lastPoint.TPM_running_total))
-            .attr("r", 4)
-            .attr("fill", "black");
-        }
-
-        // Highlight the line element on mouseover
-        d3.select(this).attr("stroke-width", 2);
-        d3.select(this).attr("stroke", "black");
-
-        // Make clip path visible on mouseOver
-        d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 1);
-      })
-      /////////////////////////////////////////Mouse Move
-      .on("mousemove", function (event) {
-        // Update the position of the tooltip on mousemove
-        d3.select(".tooltip")
-          .style("left", `${event.pageX + 10}px`)
-          .style("top", `${event.pageY + 10}px`);
-      })
-      /////////////////////////////////////////Mouse Leave
-      .on("mouseleave", function (event, d) {
-        // Remove the tooltip on mouseleave and unhighlight the line element
-        d3.select(".tooltip").remove();
-
-        // Change the stroke width back to the original on mouseLeave
-        if (!firstPoint.featured) {
-          d3.select(`#player-name-${datasetIndex}`).text("");
-          d3.select(this).attr("stroke-width", 0.5);
-        } else if (
-          firstPoint.playerName !== "Steph Curry" &&
-          firstPoint.featured
-        ) {
-          d3.select(this).attr("stroke-width", 1.2);
-        } else if (firstPoint.playerName === "Steph Curry") {
-          d3.select(this).attr("stroke-width", 2.5);
-        }
-
-        // Remove clip path text on mouseLeave
-        if (
-          firstPoint.playerName !== "Steph Curry" &&
-          firstPoint.playerName !== "Ray Allen"
-        ) {
-          d3.select(`#player-name-${datasetIndex} .accumulatedTotalText`).text(
-            ""
-          );
-
-          endPointCircle.remove();
-        }
-
-        // Change line color back to original color on mouseLeave
-        d3.select(this).attr(
-          "stroke",
-          dataWithRunningTotal[datasetIndex][0].initialColor
-        );
-
-        // Make clip path text background disappear on mouseLeave
-        d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 0);
       });
+
+    /////////////////////////////////////////Mouse Events/////////////////////////////////////////
+
+    function handleMouseOver(datasetIndex, event, d) {
+      console.log("mouseOverDSI", datasetIndex);
+      const firstPoint = dataWithRunningTotal[datasetIndex][0];
+      console.log("FirstPoint", firstPoint);
+      const lastPoint =
+        dataWithRunningTotal[datasetIndex][
+          dataWithRunningTotal[datasetIndex].length - 1
+        ];
+      console.log("LastPoint", lastPoint);
+      console.log(
+        "dataWithRunningTotal[datasetIndex]",
+        dataWithRunningTotal[datasetIndex]
+      );
+      console.log("d", d);
+
+      // Get the index of the current cell from the flat array of cells
+      const cellIndex = d.index;
+      console.log("cellIndex", cellIndex);
+
+      // Calculate the dataset index and data index using cellIndex
+      console.log("dataSetIndex", datasetIndex);
+      console.log("dataRunningTotal", dataWithRunningTotal);
+      console.log("delauney", delaunay);
+      console.log("Voronoi", voronoi);
+      console.log("InsideCellsDIndex", voronoiCells[datasetIndex]);
+      console.log("voronoiCells", voronoiCells);
+      const numRows = voronoiCells[datasetIndex].length;
+      const dataIndex = Math.floor(cellIndex / numRows);
+      console.log("dataIndex", dataIndex);
+
+      console.log("datasetIndex", datasetIndex);
+
+      // Get the data point associated with the current cell
+      const currentData = dataWithRunningTotal[datasetIndex][dataIndex];
+      console.log("CurrentData", currentData);
+
+      // Update the player's name text element if featured is set to false
+      if (
+        firstPoint.playerName !== "Steph Curry" &&
+        firstPoint.playerName !== "Ray Allen"
+      ) {
+        console.log("INSIDE THE CONDITIONAL");
+        // Show the player's name on hover
+        d3.select(`#player-name-${datasetIndex}`)
+          .text(`${currentData.playerName}`)
+          .style("fill", "#2d2d2d");
+
+        // Show the player's running total and most recent active year on hover
+        d3.select(`#player-name-${datasetIndex}`)
+          .append("tspan")
+          .attr("x", xScale(parseDate(lastPoint.Date)))
+          .attr("dx", "0.5em")
+          .attr("dy", "1.2em")
+          .text(
+            `${lastPoint.TPM_running_total} (${lastPoint.mostRecentActiveYear})`
+          )
+          .attr("class", "light")
+          .attr("class", "accumulatedTotalText")
+          .style("stroke-width", "2px")
+          .style("fill", "#2d2d2d");
+
+        endPointCircle = ctr
+          .append("circle")
+          .attr("cx", xScale(parseDate(lastPoint.Date)))
+          .attr("cy", yScale(lastPoint.TPM_running_total))
+          .attr("r", 4)
+          .attr("fill", "black");
+      }
+
+      // Highlight the line element on mouseover
+      d3.select(this).attr("stroke-width", 2);
+      d3.select(this).attr("stroke", "black");
+
+      // Make the clip path visible on mouseover
+      d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 1);
+    }
+
+    function handleMouseLeave(datasetIndex, event, d) {
+      const firstPoint = dataWithRunningTotal[datasetIndex][0];
+      const lastPoint =
+        dataWithRunningTotal[datasetIndex][
+          dataWithRunningTotal[datasetIndex].length - 1
+        ];
+      // Get the index of the current cell from the flat array of cells
+      const cellIndex = d.index;
+
+      // Calculate the dataset index and data index using cellIndex
+      // const datasetIndex = Math.floor(cellIndex / allVoronoiCells[0].length);
+      const dataIndex = cellIndex % allVoronoiCells[0].length;
+
+      // Change the stroke width back to the original on mouseLeave
+      if (!firstPoint.featured) {
+        d3.select(`#player-name-${datasetIndex}`).text("");
+        d3.select(this).attr("stroke-width", 0.5);
+      } else if (
+        firstPoint.playerName !== "Steph Curry" &&
+        firstPoint.featured
+      ) {
+        d3.select(this).attr("stroke-width", 1.2);
+      } else if (firstPoint.playerName === "Steph Curry") {
+        d3.select(this).attr("stroke-width", 2.5);
+      }
+
+      // Remove the clip path text on mouseLeave
+      if (
+        firstPoint.playerName !== "Steph Curry" &&
+        firstPoint.playerName !== "Ray Allen"
+      ) {
+        d3.select(`#player-name-${datasetIndex} .accumulatedTotalText`).text(
+          ""
+        );
+        endPointCircle.remove();
+      }
+
+      // Change the line color back to the original color on mouseLeave
+      d3.select(this).attr(
+        "stroke",
+        dataWithRunningTotal[datasetIndex][0].initialColor
+      );
+
+      // Make the clip path text background disappear on mouseLeave
+      d3.select(`#player-name-background-${datasetIndex}`).attr("opacity", 0);
+    }
 
     /////////////////////////////////////////Mouse Events - End/////////////////////////////////////////
 
@@ -538,6 +611,10 @@ const dataset = [
   hardaway,
   vanexel,
   bibby,
+  beal,
+  mills,
+  ginobili,
+  hardawayjr,
   //
   mitchell,
   tatum,
