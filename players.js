@@ -1,3 +1,4 @@
+console.log("in players.js");
 //Players
 const curryData = d3.csv("data/stephcurry/curry-career.csv");
 const allenData = d3.csv("data/rayallen/allen-career.csv");
@@ -394,7 +395,7 @@ export const mills = {
   mostRecentActiveYear: "2023",
 };
 
-//Make sure this value is correct. Seems off
+//Make sure this value is correct. Seems off. Likely due to his first three years.
 export const ginobili = {
   playerName: "Manu Ginobli",
   data: d3.csv("data/manuginobili/ginobili-career.csv"),
@@ -510,3 +511,64 @@ export const tatum = {
   featured: false,
   mostRecentActiveYear: "2023",
 };
+
+//Export
+export const datasets = [
+  curry,
+  allen,
+  harden,
+  miller,
+  korver,
+  lillard,
+  carter,
+  terry,
+  james,
+  crawford,
+  //
+  thompson,
+  pierce,
+  lowry,
+  george,
+  kidd,
+  nowitzki,
+  johnson,
+  redick,
+  smith,
+  gordon,
+  //
+  durant,
+  billups,
+  bryant,
+  matthews,
+  lewis,
+  stojakovic,
+  anthony,
+  ellis,
+  hield,
+  nash,
+  //
+  walker,
+  paul,
+  conley,
+  richardson,
+  ariza,
+  mikemiller,
+  batum,
+  mccollum,
+  green,
+  love,
+  //
+  irving,
+  rice,
+  jones,
+  hardaway,
+  vanexel,
+  bibby,
+  beal,
+  mills,
+  ginobili,
+  hardawayjr,
+  //
+  mitchell,
+  tatum,
+];

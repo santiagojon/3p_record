@@ -1,0 +1,15 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+#chart {
+  /* width: 100%;
+  max-width: 900px;
+  margin: 0 auto; */
+  /* padding: 10rem; */
+  /* box-sizing: border-box; */
+}
+
+#y-axis path.domain {
+  display: none !important;
+}

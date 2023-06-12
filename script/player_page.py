@@ -10,19 +10,23 @@ from requests.packages.urllib3.util.retry import Retry
 
 def create_retry_session(retries=3, backoff_factor=0.3, status_forcelist=(500, 502, 503, 504, 429), session=None):
     session = session or Session()
+    print('Create Session', session)
     retry = Retry(
         total=retries,
         backoff_factor=backoff_factor,
         status_forcelist=status_forcelist,
         raise_on_status=False
     )
+    print('REtry', retry)
     adapter = HTTPAdapter(max_retries=retry)
+    print('Adapter', adapter)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     return session
 
 # Use the session object to handle retries
 session = create_retry_session()
+print('Session is THIS:', session)
 
 
 def adjust_row(row, headers):
@@ -34,14 +38,18 @@ def adjust_row(row, headers):
 
 
 def fetch_data(player_url):
+    print('Inside fetch_data')
     base_url = "https://www.basketball-reference.com"
     player_id = player_url.split('/')[-1].replace('.html', '')
-    print('PLAYER_ID', player_id)
 
-    #Fetch main player page
+    # Fetch main player page
     try:
+        print('fetch_data: Try block')
         response = session.get(player_url)
-        #response = requests.get(player_url)
+        if response.status_code == 429:
+            print('Too Many Requests, sleeping...')
+            time.sleep(10)  # adjust the sleep time as needed
+        print('response', response)
         response.raise_for_status()
     except requests.RequestException as err:
         print(f"An error occurred when fetching player's data: {err}")
@@ -49,15 +57,15 @@ def fetch_data(player_url):
 
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # find all links in the the per_game table
+    # Find all links in the the per_game table
     try:
         start_year = end_year = None
         anchor_tags = soup.select('table#per_game a')
-        print('AT', anchor_tags)
+        print('Anchor Tags | 55:', anchor_tags)
 
         if anchor_tags:
             start_year_text = anchor_tags[0].get_text().strip()
-            end_year_text = anchor_tags[-6].get_text().strip()
+            end_year_text = anchor_tags[-9].get_text().strip()
             print('SYT', start_year_text)
             print('EYT', end_year_text)
             #refactor this so it locates the correct anchor tag. it won't always be at index -6
@@ -90,9 +98,11 @@ def fetch_data(player_url):
     for index, link in enumerate(career_links):
         try:
             # Add delay before making the request
-            time.sleep(randint(1, 3))
+            print('In loop')
+            time.sleep(randint(3, 10))
             #response = requests.get(link)
             response = session.get(link) 
+            print('Loop response', response)
 
             if response.status_code == 429:
                 print(f"Too many requests. The server responded with a 429 status code.")
@@ -131,7 +141,7 @@ def save_data_to_csv(data_frame, file_name):
     except Exception as err:
         print(f"An error occurred when saving data to CSV: {err}")
 
-player_url = "https://www.basketball-reference.com/players/h/hardati02.html"  # replace this with the URL of the player you're interested in
+player_url = "https://www.basketball-reference.com/players/w/willilo02.html"
 df = fetch_data(player_url)
 if df is not None:
-    save_data_to_csv(df, 'hardawayjr-career.csv')
+    save_data_to_csv(df, 'test-career.csv')

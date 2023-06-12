@@ -1,11 +1,16 @@
-import { scaleLinear } from "d3";
-import { innerWidth, innerHeight } from "../utils/dimensions.js";
+import {
+  width,
+  height,
+  innerWidth,
+  innerHeight,
+  paddedWidth,
+} from "../utils/dimensions.js";
 
 // Scales
-const xScale = scaleLinear().domain([20, 40]).range([0, innerWidth]);
+export const xScale = d3.scaleLinear().domain([17, 40]).range([0, innerWidth]);
 
-const yScale = scaleLinear().domain([1, 12]).range([innerHeight, 0]);
+export const yScale = d3.scaleLinear().domain([0, 6]).range([innerHeight, 0]);
 
 // Axis
 export const xAxis = d3.axisBottom(xScale).ticks(5);
-export const yAxis = d3.axisLeft(yScale);
+export const yAxis = d3.axisLeft(yScale).ticks(7);
