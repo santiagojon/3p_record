@@ -2,13 +2,12 @@ import { xScale, yScale } from "./axes.js";
 import { handleMouseOver, handleMouseOut } from "./mouseEvents.js";
 import { drawPlayerLine } from "./drawDataPointLine.js";
 
-export const drawDataPoints = (
-  data,
-  playerName,
-  ctr,
-  featured
-  //   drawPlayerLine
-) => {
+export const drawDataPoints = (data, playerName, ctr, featured) => {
+  console.log("drawDataPoints|Data", data);
+  console.log("drawDataPoints|Name", playerName);
+  console.log("drawDataPoints|Featured");
+  console.log("drawDataPoints|ctr", ctr);
+
   const getPlayerColor = (playerName) => {
     switch (playerName) {
       case "Steph Curry":
@@ -20,21 +19,17 @@ export const drawDataPoints = (
     }
   };
 
+  const playerClass = playerName.replace(/ /g, "-");
+
   ctr
-    .selectAll(".dot")
+    .selectAll(`.dot.${playerClass}`)
     .data(data)
     .join("circle")
-    .attr("class", "dot")
+    .attr("class", `dot ${playerClass}`)
     .attr("cx", (d) => xScale(d.age))
     .attr("cy", (d) => yScale(d.average))
     .attr("r", 5)
-    .attr("fill", getPlayerColor(playerName))
-    .on("mouseover", (d, i, nodes) =>
-      handleMouseOver(d, i, nodes, data, ctr, playerName, featured)
-    )
-    .on("mouseout", (d, i, nodes) =>
-      handleMouseOut(d, i, nodes, data, ctr, playerName, featured)
-    );
+    .attr("fill", getPlayerColor(playerName));
 
   return ctr;
 };

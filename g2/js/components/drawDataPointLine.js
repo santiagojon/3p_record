@@ -14,16 +14,25 @@ export const drawPlayerLine = (data, playerName, featured, ctr) => {
       case "Ray Allen":
         return "gold";
       default:
-        return "lightgrey";
+        return "#1b1c1c";
     }
   };
+
+  console.log("Line Generator Data", playerName, data);
+  //Should be an array of objects, each with two properties, age and average
 
   // Draw the line for each player
   ctr
     .append("path")
-    .datum(data) // assuming each player's games are stored here
+    .datum(data)
+    .attr(
+      "class",
+      `player-line ${playerName
+        .replace(/[^a-zA-Z0-9]/g, "-")
+        .replace(/-+/g, "-")}`
+    )
     .attr("d", lineGenerator)
     .attr("fill", "none")
-    .attr("stroke", playerLineColor(playerName)) // use the function here
+    .attr("stroke", playerLineColor(playerName))
     .attr("stroke-width", 1.5);
 };

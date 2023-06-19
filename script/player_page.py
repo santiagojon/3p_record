@@ -65,7 +65,7 @@ def fetch_data(player_url):
 
         if anchor_tags:
             start_year_text = anchor_tags[0].get_text().strip()
-            end_year_text = anchor_tags[-9].get_text().strip()
+            end_year_text = anchor_tags[-5].get_text().strip()
             print('SYT', start_year_text)
             print('EYT', end_year_text)
             #refactor this so it locates the correct anchor tag. it won't always be at index -6
@@ -98,8 +98,7 @@ def fetch_data(player_url):
     for index, link in enumerate(career_links):
         try:
             # Add delay before making the request
-            print('In loop')
-            time.sleep(randint(3, 10))
+            time.sleep(randint(1, 3))
             #response = requests.get(link)
             response = session.get(link) 
             print('Loop response', response)
@@ -137,11 +136,12 @@ def fetch_data(player_url):
 
 def save_data_to_csv(data_frame, file_name):
     try:
+        print('in save to csv')
         data_frame.to_csv(file_name, index=False)
     except Exception as err:
         print(f"An error occurred when saving data to CSV: {err}")
 
-player_url = "https://www.basketball-reference.com/players/w/willilo02.html"
+player_url = "https://www.basketball-reference.com/players/l/lavinza01.html"
 df = fetch_data(player_url)
 if df is not None:
     save_data_to_csv(df, 'test-career.csv')

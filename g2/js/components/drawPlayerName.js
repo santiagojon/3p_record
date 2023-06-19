@@ -18,13 +18,17 @@ export const drawPlayerName = (data, playerName, ctr, position = "end") => {
       case "Ray Allen":
         return "gold";
       default:
-        return "lightgrey";
+        return "rgb(140, 140, 140)";
     }
   };
 
   // Append the label
   ctr
     .append("text")
+    .attr(
+      "class",
+      `${playerName.replace(/[^a-zA-Z0-9]/g, "-").replace(/-+/g, "-")}`
+    )
     .attr("x", xScale(playerDataPoint.age))
     .attr("y", yScale(playerDataPoint.average) + 20)
     .text(playerName)

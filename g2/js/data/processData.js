@@ -1,7 +1,8 @@
-export function processPlayerData(playerData) {
+export function processPlayerData(playerData, playerName, featured) {
   // Create an empty object to accumulate data
   const accumulator = {};
   let totalCareerThrees = 0;
+  console.log("PROCESSDATA", playerData);
 
   playerData.forEach((game) => {
     // Ensure the game's 'age' and 'TPM' are numbers
@@ -29,7 +30,12 @@ export function processPlayerData(playerData) {
   // Convert the accumulator into an array of averages
   const averages = Object.keys(accumulator).map((age) => {
     const { total, gamesPlayed } = accumulator[age];
-    return { age: +age, average: total / gamesPlayed };
+    return {
+      age: +age,
+      average: total / gamesPlayed,
+      playerName: playerName,
+      featured: featured,
+    };
   });
 
   return averages;

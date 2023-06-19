@@ -13,3 +13,11 @@ body {
 #y-axis path.domain {
   display: none !important;
 }
+
+.dot .steph-curry {
+  z-index: 10;
+}
+
+.dot .ray-allen {
+  z-index: 10;
+}
