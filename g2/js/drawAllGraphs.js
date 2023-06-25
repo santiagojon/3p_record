@@ -5,32 +5,32 @@ import {
   paddedWidth,
 } from "./utils/dimensions.js";
 
-import { xAxis, yAxis } from "./components/axes.js";
+import { xAxis, yAxis, yAxisLabels, xAxisLabels } from "./components/axes.js";
 
 import { drawGraph2 } from "./modules/graph2.js";
 import { drawGridlines } from "./components/gridlines.js";
 import { drawVoronoiDiagram } from "./components/voronoi.js";
 
-const svg = d3
+const graphSvg = d3
   .select("#chart")
   .append("svg")
   .attr("width", innerWidth + margin.left + margin.right)
   .attr("height", innerHeight + margin.top + margin.bottom);
 
 export const drawAllGraphs = (players) => {
-  const ctr = svg
+  const ctr = graphSvg
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-  // X Axis
-  ctr.append("g").attr("transform", `translate(0, ${innerHeight})`).call(xAxis);
+  // Custom Y Axis + Label
+  yAxisLabels(ctr);
 
-  // Y Axis
-  ctr.append("g").call(yAxis);
-  // drawCustomYAxis(data, yScale, ctr);
+  // Custom X Axis + Label
+  xAxisLabels(ctr);
+  const xAxisLength = ctr.select(".domain").node().getTotalLength();
 
   // Gridlines along Y Axis
-  drawGridlines(ctr);
+  drawGridlines(ctr, xAxisLength);
 
   // Sort player data for dot stacking purposes
   players.sort((a, b) => {

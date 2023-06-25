@@ -1,5 +1,7 @@
 body {
-  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 0.8rem;
 }
 
 #chart {
@@ -20,4 +22,50 @@ body {
 
 .dot .ray-allen {
   z-index: 10;
+}
+
+#threepointers-top-100 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#threepointers-top-100__title {
+  font-size: 1rem;
+  padding: 0;
+  margin: 2rem 0 0 0;
+}
+
+#threepointers-top-100__credits {
+  margin: 0;
+  padding: 0;
+  font-size: 0.7rem;
+  color: grey;
+  font-weight: 500;
+}
+
+.threepointers-top-100_credits--source::after,
+.threepointers-top-100_credits--date::after {
+  content: " \2022"; /* Unicode character for bullet point */
+  padding-left: 5px;
+}
+
+#y-axis path.domain {
+  display: none !important;
+}
+
+#y-axis2 path.domain {
+  display: none !important;
+}
+
+.tick text {
+  transform: translate(0, 5px);
+  font-size: 0.8rem;
+  color: gray;
+  font-weight: 300;
+}
+
+.x-axis.tick {
+  display: none;
 }

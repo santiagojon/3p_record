@@ -2,7 +2,6 @@ export function processPlayerData(playerData, playerName, featured) {
   // Create an empty object to accumulate data
   const accumulator = {};
   let totalCareerThrees = 0;
-  console.log("PROCESSDATA", playerData);
 
   playerData.forEach((game) => {
     // Ensure the game's 'age' and 'TPM' are numbers

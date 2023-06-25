@@ -1,6 +1,12 @@
 import { xScale, yScale } from "./axes.js";
 
-export const drawPlayerName = (data, playerName, ctr, position = "end") => {
+export const drawPlayerName = (
+  data,
+  playerName,
+  ctr,
+  featured,
+  position = "end"
+) => {
   let playerDataPoint;
 
   // Check if the label should be at the start or the end
@@ -18,12 +24,12 @@ export const drawPlayerName = (data, playerName, ctr, position = "end") => {
       case "Ray Allen":
         return "gold";
       default:
-        return "rgb(140, 140, 140)";
+        return "5e5f5f";
     }
   };
 
   // Append the label
-  ctr
+  const name = ctr
     .append("text")
     .attr(
       "class",

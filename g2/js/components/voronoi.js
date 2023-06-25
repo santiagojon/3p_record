@@ -2,7 +2,6 @@ import { xScale, yScale } from "./axes.js";
 import { innerWidth, innerHeight } from "../utils/dimensions.js";
 import { handleMouseOver, handleMouseOut } from "./mouseEvents.js";
 
-// import { Delaunay } from "d3-delaunay";
 import { Delaunay } from "https://cdn.skypack.dev/d3-delaunay";
 
 export const drawVoronoiDiagram = (data, ctr, playerName, featured) => {
@@ -18,7 +17,7 @@ export const drawVoronoiDiagram = (data, ctr, playerName, featured) => {
     .append("g")
     .selectAll(".cell")
     .data(data)
-    .join("path") // Use join instead of append here to properly bind data to the 'path' elements
+    .join("path")
     .attr("class", "cell")
     .attr("d", (_, i) => voronoi.renderCell(i))
     .attr("fill", "none")

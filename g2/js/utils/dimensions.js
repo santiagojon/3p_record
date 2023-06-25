@@ -1,5 +1,5 @@
 export const width = 1000;
-export const height = 700;
+export const height = 550;
 
 export const margin = { top: 70, right: 70, bottom: 70, left: 70 };
 
